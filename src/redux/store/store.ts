@@ -1,10 +1,9 @@
-// store.ts
 import { configureStore } from "@reduxjs/toolkit";
 import { useDispatch, useSelector, TypedUseSelectorHook } from "react-redux";
 import authReducer from "../reducers/authReducer";
 import gameReducer from "../reducers/gameReducer";
 import languageReducer from "../reducers/languageReducer";
-import userReducer from "../reducers/userReducers";
+import { userReducer } from "../reducers/userReducers";
 
 export const store = configureStore({
   reducer: {
