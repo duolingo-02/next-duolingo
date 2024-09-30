@@ -1,150 +1,54 @@
-// ==============================
-// Importing Redux Toolkit and Axios
-// ==============================
-import { createAsyncThunk } from "@reduxjs/toolkit";
-import axios from "axios";
-import { RootState } from "../store/store";
+import { AppDispatch } from "../store/store";
 
-// ==============================
-// Helper function to get token from state
-// ==============================
-const getAuthToken = (state: RootState) => state.auth.token;
+export const fetchUserProfile = () => async (dispatch: AppDispatch) => {
+  dispatch({ type: "USER_PROFILE_REQUEST" });
+  try {
+    const userId = localStorage.getItem("userId"); // Get from local storage or your state
+    const response = await fetch(`/api/user/points/${userId}`);
+    const data = await response.json();
 
-export const fetchUserProfile = createAsyncThunk(
-  "user/fetchUserProfile",
-  async (_, thunkAPI) => {
+    if (response.ok) {
+      dispatch({ type: "USER_PROFILE_SUCCESS", payload: data });
+    } else {
+      dispatch({ type: "USER_PROFILE_FAIL", payload: data.message });
+    }
+  } catch (error) {
+    dispatch({
+      type: "USER_PROFILE_FAIL",
+      payload: "Failed to fetch user profile",
+    });
+  }
+};
+
+export const updateUserProfile =
+  (profileData: { username: string; email: string }) =>
+  async (dispatch: AppDispatch) => {
+    dispatch({ type: "UPDATE_PROFILE_REQUEST" });
     try {
-      const state = thunkAPI.getState() as RootState;
-      const token = getAuthToken(state);
+      const userId = localStorage.getItem("userId");
+      const token = localStorage.getItem("token");
 
-      if (!token) {
-        return thunkAPI.rejectWithValue("No auth token available");
-      }
-
-      const response = await axios.get("/api/user/current", {
+      const response = await fetch(`/api/user/update/${userId}`, {
+        method: "PUT",
         headers: {
+          "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
         },
+        body: JSON.stringify(profileData),
       });
 
-      console.log("Fetched user profile:", response.data);
-      return response.data;
-    } catch (error: any) {
-      console.error("Error fetching user profile:", error);
-      if (!error.response) {
-        return thunkAPI.rejectWithValue("Network Error");
+      const data = await response.json();
+      if (response.ok) {
+        dispatch({ type: "UPDATE_PROFILE_SUCCESS", payload: data });
+      } else {
+        dispatch({ type: "UPDATE_PROFILE_FAIL", payload: data.message });
       }
-      return thunkAPI.rejectWithValue(
-        error.response?.data?.message || "Failed to fetch user profile"
-      );
-    }
-  }
-);
-
-// ==============================
-// Update User Profile
-// ==============================
-export const updateUserProfile = createAsyncThunk(
-  "user/updateUserProfile",
-  async (updatedData: { username: string; email: string }, thunkAPI) => {
-    try {
-      const state = thunkAPI.getState() as RootState;
-      const token = getAuthToken(state);
-
-      if (!token) {
-        return thunkAPI.rejectWithValue("No auth token available");
-      }
-
-      const response = await axios.put("/api/user/me/profile", updatedData, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
+    } catch (error) {
+      dispatch({
+        type: "UPDATE_PROFILE_FAIL",
+        payload: "Failed to update profile",
       });
-
-      console.log("Updated user profile:", response.data);
-      return response.data;
-    } catch (error: any) {
-      console.error("Error updating user profile:", error);
-      if (!error.response) {
-        return thunkAPI.rejectWithValue("Network Error");
-      }
-      return thunkAPI.rejectWithValue(
-        error.response?.data?.message || "Failed to update profile"
-      );
     }
-  }
-);
+  };
 
-// ==============================
-// Update User Profile with Picture
-// ==============================
-export const updateUserProfileWithPicture = createAsyncThunk(
-  "user/updateUserProfileWithPicture",
-  async (formData: FormData, thunkAPI) => {
-    try {
-      const state = thunkAPI.getState() as RootState;
-      const token = getAuthToken(state);
-
-      if (!token) {
-        return thunkAPI.rejectWithValue("No auth token available");
-      }
-
-      const response = await axios.put("/api/user/me/profile", formData, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "multipart/form-data",
-        },
-      });
-
-      console.log("Updated profile with picture:", response.data);
-      return response.data;
-    } catch (error: any) {
-      console.error("Error updating profile with picture:", error);
-      if (!error.response) {
-        return thunkAPI.rejectWithValue("Network Error");
-      }
-      return thunkAPI.rejectWithValue(
-        error.response?.data?.message || "Failed to update profile with picture"
-      );
-    }
-  }
-);
-
-// ==============================
-// Update User Password
-// ==============================
-export const updateUserPassword = createAsyncThunk(
-  "user/updateUserPassword",
-  async (
-    updatedData: { currentPassword: string; newPassword: string },
-    thunkAPI
-  ) => {
-    try {
-      const state = thunkAPI.getState() as RootState;
-      const token = getAuthToken(state);
-
-      if (!token) {
-        return thunkAPI.rejectWithValue("No auth token available");
-      }
-
-      console.log("Sending password update request:", updatedData);
-
-      const response = await axios.put("/api/user/me/password", updatedData, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-
-      console.log("Password updated successfully:", response.data);
-      return response.data;
-    } catch (error: any) {
-      console.error("Error updating password:", error);
-      if (!error.response) {
-        return thunkAPI.rejectWithValue("Network Error");
-      }
-      return thunkAPI.rejectWithValue(
-        error.response?.data?.message || "Failed to update password"
-      );
-    }
-  }
-);
+// Similar structure can be followed for updateUserProfileWithPicture and updateUserPassword actions
