@@ -20,7 +20,7 @@ CREATE TABLE `Question` (
     `id` INTEGER NOT NULL AUTO_INCREMENT,
     `questionText` VARCHAR(191) NOT NULL,
     `lessonId` INTEGER NOT NULL,
-    `type` ENUM('MULTIPLE_CHOICE', 'ORDERING') NOT NULL,
+    `type` ENUM('MULTIPLE_CHOICE', 'ORDERING', 'TRUE_FALSE') NOT NULL,
     `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `updatedAt` DATETIME(3) NOT NULL,
 
@@ -48,6 +48,7 @@ CREATE TABLE `LessonsUsers` (
     `userId` INTEGER NOT NULL,
     `lessonId` INTEGER NOT NULL,
 
+    UNIQUE INDEX `LessonsUsers_userId_lessonId_key`(`userId`, `lessonId`),
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 

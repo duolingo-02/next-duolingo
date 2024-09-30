@@ -126,6 +126,7 @@ model UserAchievement {
 enum QuestionType {
   MULTIPLE_CHOICE
   ORDERING
+  TRUE_FALSE
 }
 
 enum ProgressStatus {
