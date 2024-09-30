@@ -114,77 +114,50 @@ const UserProfile: React.FC = () => {
   }, [dispatch, router]);
 
   return (
-    <div style={containerStyles}>
-      <div style={profileStyles}>
-        <h1 style={typographyStyles.title}>Profile</h1>
-        {error && <p>{error}</p>}
-        <form style={formStyles} onSubmit={handleProfileSubmit}>
-          <label>
+    <div className={containerStyles.fullScreenCenter}>
+      <div className={containerStyles.card}>
+        <h1 className={typographyStyles.heading1}>Profile</h1>
+        <div className={profileStyles.pictureContainer}>
+          <img
+            className={profileStyles.picture}
+            src={previewImage || "/path-to-profile-pic.jpg"}
+            alt="Profile"
+          />
+        </div>
+        <h2 className={profileStyles.username}>{username}</h2>
+        <p className={profileStyles.profileDescription}>
+          This is your bio description. You can edit it in your profile
+          settings.
+        </p>
+        <form className={formStyles.formGroup} onSubmit={handleProfileSubmit}>
+          <label className={formStyles.label}>
             Username:
             <input
-              id="username"
               type="text"
+              className={formStyles.input}
+              id="username"
               value={username}
               onChange={handleChange}
             />
           </label>
-          <label>
+          <label className={formStyles.label}>
             Email:
             <input
-              id="email"
               type="email"
+              className={formStyles.input}
+              id="email"
               value={email}
               onChange={handleChange}
             />
           </label>
-          <label>
-            Profile Picture:
-            <input type="file" accept="image/*" onChange={handleImageChange} />
-          </label>
-          {previewImage && <img src={previewImage} alt="Preview" />}
-          <button type="submit" style={buttonStyles}>
+          <button type="submit" className={buttonStyles.primary}>
             Update Profile
           </button>
         </form>
+        <button className={buttonStyles.logout} onClick={handleLogOut}>
+          Logout
+        </button>
       </div>
-      <div style={profileStyles}>
-        <h2>Change Password</h2>
-        <form style={formStyles} onSubmit={handlePasswordSubmit}>
-          <label>
-            Current Password:
-            <input
-              id="currentPassword"
-              type="password"
-              value={currentPassword}
-              onChange={handleChange}
-            />
-          </label>
-          <label>
-            New Password:
-            <input
-              id="newPassword"
-              type="password"
-              value={newPassword}
-              onChange={handleChange}
-            />
-          </label>
-          <label>
-            Confirm New Password:
-            <input
-              id="confirmPassword"
-              type="password"
-              value={confirmPassword}
-              onChange={handleChange}
-            />
-          </label>
-          <button type="submit" style={buttonStyles}>
-            Change Password
-          </button>
-        </form>
-      </div>
-      <button onClick={handleLogOut} style={buttonStyles}>
-        Log Out
-      </button>
     </div>
   );
 };
