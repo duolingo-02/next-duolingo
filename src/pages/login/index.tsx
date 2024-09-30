@@ -3,15 +3,15 @@ import { useDispatch, useSelector } from "react-redux";
 import { useRouter } from 'next/router';
 import Link from 'next/link';
 
-import { login } from "../../../redux/actions/authActions";
-import { AppDispatch, RootState } from "../../../redux/store/store";
+import { login } from "../../redux/actions/authActions";
+import { AppDispatch, RootState } from "../../redux/store/store";
 
 import {
   buttonStyles,
   containerStyles,
   formStyles,
   typographyStyles,
-} from "../../../styles/styles";
+} from "../../styles/styles";
 
 const Login: React.FC = () => {
   const [email, setEmail] = useState("");

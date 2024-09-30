@@ -129,14 +129,14 @@ const Play: React.FC = () => {
   };
 
   return (
-    <div>
-      <h2>Lesson {currentStage}</h2>
-      <div>Lives: {lives}</div>
-      <div>Points: {points}</div>
-      <div>Progress: {progress.toFixed(2)}%</div>
-      {renderQuiz()}
+    <div className="bg-white min-h-screen">
+      <div className="container mx-auto p-4">
+        
+    
+        {renderQuiz()}
+      </div>
     </div>
-  );
+  );;
 };
 
 export default Play;

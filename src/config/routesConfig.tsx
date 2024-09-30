@@ -2,8 +2,8 @@ import React from 'react';
 import { RouteConfig } from "../types/RouteConfig";
 import LayoutWrapper from "../components/layout/LayoutWrapper";
 import HeroWelcome from "../pages/welcome";
-import Login from "../pages/auth/login";
-import SignUp from "../pages/auth/signup";
+import Login from "../pages/login";
+import SignUp from "../pages/signup";
 import Lobby from "../components/games/LobbyLanguage";
 import StageListWrapper from "../components/games/StageListWrapper";
 import Play from "../components/games/Play";
@@ -13,7 +13,7 @@ import Play from "../components/games/Play";
     path: "/",
     component: <LayoutWrapper withNavbar={false}><HeroWelcome /></LayoutWrapper>,
     isProtected: false,
-    withNavbar: false,
+    withNavbar: true,
   },
   {
     path: "/login",

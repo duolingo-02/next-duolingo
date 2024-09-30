@@ -86,7 +86,7 @@ const TrueFalseQuiz: React.FC<TrueFalseQuizProps> = ({ questions, language, onCo
   };
   
   const handleBack = () => {
-    router.push(`/language/${router.query.languageId}/stage-selection`);
+    router.push(`/language/${router.query.languageId}/stages`);
   };
 
   const handleTextToSpeech = async () => {
