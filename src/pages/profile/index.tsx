@@ -43,9 +43,23 @@ const UserProfile: React.FC = () => {
 
   useEffect(() => {
     if (!userProfile) {
+      console.log("Fetching user profile...");
       dispatch(fetchUserProfile());
     }
+    console.log("UserProfile:", userProfile);
   }, [dispatch, userProfile]);
+
+  useEffect(() => {
+    if (userProfile) {
+      setFormState({
+        username: userProfile.username,
+        email: userProfile.email,
+        currentPassword: "",
+        newPassword: "",
+        confirmPassword: "",
+      });
+    }
+  }, [userProfile]);
 
   useEffect(() => {
     if (userProfile) {

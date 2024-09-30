@@ -10,9 +10,6 @@ import { RootState } from "../store/store";
 // ==============================
 const getAuthToken = (state: RootState) => state.auth.token;
 
-// ==============================
-// Fetch User Profile
-// ==============================
 export const fetchUserProfile = createAsyncThunk(
   "user/fetchUserProfile",
   async (_, thunkAPI) => {
@@ -24,7 +21,7 @@ export const fetchUserProfile = createAsyncThunk(
         return thunkAPI.rejectWithValue("No auth token available");
       }
 
-      const response = await axios.get("http://localhost:1274/api/user/me", {
+      const response = await axios.get("/api/user/current", {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -34,6 +31,9 @@ export const fetchUserProfile = createAsyncThunk(
       return response.data;
     } catch (error: any) {
       console.error("Error fetching user profile:", error);
+      if (!error.response) {
+        return thunkAPI.rejectWithValue("Network Error");
+      }
       return thunkAPI.rejectWithValue(
         error.response?.data?.message || "Failed to fetch user profile"
       );
@@ -55,20 +55,19 @@ export const updateUserProfile = createAsyncThunk(
         return thunkAPI.rejectWithValue("No auth token available");
       }
 
-      const response = await axios.put(
-        "http://localhost:1274/api/user/me/profile",
-        updatedData,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+      const response = await axios.put("/api/user/me/profile", updatedData, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
 
       console.log("Updated user profile:", response.data);
       return response.data;
     } catch (error: any) {
       console.error("Error updating user profile:", error);
+      if (!error.response) {
+        return thunkAPI.rejectWithValue("Network Error");
+      }
       return thunkAPI.rejectWithValue(
         error.response?.data?.message || "Failed to update profile"
       );
@@ -90,21 +89,20 @@ export const updateUserProfileWithPicture = createAsyncThunk(
         return thunkAPI.rejectWithValue("No auth token available");
       }
 
-      const response = await axios.put(
-        "http://localhost:1274/api/user/me/profile",
-        formData,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "multipart/form-data",
-          },
-        }
-      );
+      const response = await axios.put("/api/user/me/profile", formData, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "multipart/form-data",
+        },
+      });
 
       console.log("Updated profile with picture:", response.data);
       return response.data;
     } catch (error: any) {
       console.error("Error updating profile with picture:", error);
+      if (!error.response) {
+        return thunkAPI.rejectWithValue("Network Error");
+      }
       return thunkAPI.rejectWithValue(
         error.response?.data?.message || "Failed to update profile with picture"
       );
@@ -131,20 +129,19 @@ export const updateUserPassword = createAsyncThunk(
 
       console.log("Sending password update request:", updatedData);
 
-      const response = await axios.put(
-        "http://localhost:1274/api/user/me/password",
-        updatedData,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+      const response = await axios.put("/api/user/me/password", updatedData, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
 
       console.log("Password updated successfully:", response.data);
       return response.data;
     } catch (error: any) {
       console.error("Error updating password:", error);
+      if (!error.response) {
+        return thunkAPI.rejectWithValue("Network Error");
+      }
       return thunkAPI.rejectWithValue(
         error.response?.data?.message || "Failed to update password"
       );
