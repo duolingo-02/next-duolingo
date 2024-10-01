@@ -3,8 +3,11 @@
 @tailwind utilities;
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #0a0a0a;
+  --foreground: #ededed;
+  --duolingo-green: #58cc02;
+  --duolingo-dark: #1b242f;
+  --duolingo-light: #ffffff;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -17,7 +20,7 @@
 body {
   color: var(--foreground);
   background: var(--background);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: "Poppins", sans-serif;
 }
 
 @layer utilities {
@@ -31,11 +34,129 @@ body {
   overflow-y: auto;
 }
 
-html, body {
+html,
+body {
   height: 100%;
   overflow: hidden;
 }
 
 #root {
   height: 100%;
+}
+
+/* Add the styles for the UserProfile component */
+.profile-picture-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.profile-picture {
+  width: 150px;
+  height: 150px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 4px solid var(--duolingo-green);
+}
+
+.profile-username {
+  font-size: 24px;
+  font-weight: bold;
+  text-align: center;
+  margin-bottom: 10px;
+  color: var(--duolingo-green);
+}
+
+.profile-description {
+  font-size: 16px;
+  text-align: center;
+  margin-bottom: 20px;
+  color: var(--duolingo-light);
+}
+
+.container-full-screen-center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background-color: var(--duolingo-dark);
+}
+
+.container-card {
+  background: linear-gradient(145deg, #1b242f, #2c3e50);
+  padding: 20px;
+  border-radius: 16px;
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+  width: 100%;
+  max-width: 500px;
+}
+
+.button-primary {
+  background-color: var(--duolingo-green);
+  color: var(--duolingo-light);
+  padding: 10px 20px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  margin-top: 10px;
+  transition: background-color 0.3s, transform 0.3s;
+}
+
+.button-primary:hover {
+  background-color: #45a800;
+  transform: scale(1.05);
+}
+
+.button-primary:disabled {
+  background-color: #cccccc;
+}
+
+.button-logout {
+  background-color: #dc3545;
+  color: var(--duolingo-light);
+  padding: 10px 20px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  margin-top: 10px;
+  transition: background-color 0.3s, transform 0.3s;
+}
+
+.button-logout:hover {
+  background-color: #c82333;
+  transform: scale(1.05);
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 15px;
+}
+
+.form-label {
+  margin-bottom: 5px;
+  color: var(--duolingo-light);
+}
+
+.form-input {
+  padding: 10px;
+  border: 1px solid #cccccc;
+  border-radius: 8px;
+  background-color: var(--duolingo-dark);
+  color: var(--duolingo-light);
+  transition: border-color 0.3s;
+}
+
+.form-input:focus {
+  border-color: var(--duolingo-green);
+  outline: none;
+}
+
+.typography-heading1 {
+  font-size: 32px;
+  font-weight: bold;
+  text-align: center;
+  margin-bottom: 20px;
+  color: var(--duolingo-green);
 }

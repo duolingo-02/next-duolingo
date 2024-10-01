@@ -1,5 +1,4 @@
 "use client";
-
 import React, { useCallback, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { logout } from "../../redux/actions/authActions";
@@ -11,13 +10,7 @@ import {
 } from "../../redux/actions/userActions";
 import { AppDispatch, RootState } from "../../redux/store/store";
 import { useRouter } from "next/router";
-import {
-  buttonStyles,
-  containerStyles,
-  formStyles,
-  profileStyles,
-  typographyStyles,
-} from "../../styles/styles";
+import Image from "next/image";
 
 const UserProfile: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -140,103 +133,124 @@ const UserProfile: React.FC = () => {
   }, [dispatch, router]);
 
   return (
-    <div className={containerStyles.fullScreenCenter}>
-      <div className={containerStyles.card}>
-        <h1 className={typographyStyles.heading1}>Profile</h1>
-        <div className={profileStyles.pictureContainer}>
+    <div className="flex items-center justify-center min-h-screen bg-duolingo-dark">
+      <div className="bg-duolingo-dark p-8 rounded-2xl shadow-lg max-w-md w-full">
+        <div className="flex justify-center mb-6">
+          <Image
+            src="https://static1.howtogeekimages.com/wordpress/wp-content/uploads/2023/09/duolingo-generic-hero.jpg"
+            alt="Duolingo Owl"
+            width={80}
+            height={80}
+          />
+        </div>
+        <h1 className="text-3xl font-bold text-center mb-6 text-duolingo-green">
+          Profile
+        </h1>
+        <div className="flex justify-center mb-4">
           <img
-            className={profileStyles.picture}
+            className="w-32 h-32 rounded-full shadow-md border-4 border-duolingo-green"
             src={previewImage || "/path-to-profile-pic.jpg"}
             alt="Profile"
           />
         </div>
-        <h2 className={profileStyles.username}>{username}</h2>
-        <p className={profileStyles.profileDescription}>
+        <h2 className="text-2xl font-semibold text-center mb-2 text-duolingo-green">
+          {username}
+        </h2>
+        <p className="text-center text-duolingo-light mb-6">
           This is your bio description. You can edit it in your profile
           settings.
         </p>
-        <form className={formStyles.formGroup} onSubmit={handleProfileSubmit}>
-          <label className={formStyles.label}>
-            Username:
+        <form className="space-y-4" onSubmit={handleProfileSubmit}>
+          <div>
+            <label className="block text-duolingo-light">Username:</label>
             <input
               type="text"
-              className={formStyles.input}
+              className="w-full p-2 border border-gray-300 rounded-lg bg-duolingo-dark text-duolingo-light"
               id="username"
               value={username}
               onChange={handleChange}
               required
             />
-          </label>
-          <label className={formStyles.label}>
-            Email:
+          </div>
+          <div>
+            <label className="block text-duolingo-light">Email:</label>
             <input
               type="email"
-              className={formStyles.input}
+              className="w-full p-2 border border-gray-300 rounded-lg bg-duolingo-dark text-duolingo-light"
               id="email"
               value={email}
               onChange={handleChange}
               required
             />
-          </label>
-          <label className={formStyles.label}>
-            Profile Picture:
+          </div>
+          <div>
+            <label className="block text-duolingo-light">
+              Profile Picture:
+            </label>
             <input
               type="file"
-              className={formStyles.input}
+              className="w-full p-2 border border-gray-300 rounded-lg bg-duolingo-dark text-duolingo-light"
               onChange={handleImageChange}
             />
-          </label>
+          </div>
           <button
             type="submit"
-            className={buttonStyles.primary}
+            className="w-full py-2 bg-duolingo-green text-duolingo-light rounded-lg hover:bg-green-600 transition duration-200"
             disabled={loading}
           >
             {loading ? "Updating..." : "Update Profile"}
           </button>
         </form>
-        <form className={formStyles.formGroup} onSubmit={handlePasswordSubmit}>
-          <label className={formStyles.label}>
-            Current Password:
+        <form className="space-y-4 mt-6" onSubmit={handlePasswordSubmit}>
+          <div>
+            <label className="block text-duolingo-light">
+              Current Password:
+            </label>
             <input
               type="password"
-              className={formStyles.input}
+              className="w-full p-2 border border-gray-300 rounded-lg bg-duolingo-dark text-duolingo-light"
               id="currentPassword"
               value={currentPassword}
               onChange={handleChange}
               required
             />
-          </label>
-          <label className={formStyles.label}>
-            New Password:
+          </div>
+          <div>
+            <label className="block text-duolingo-light">New Password:</label>
             <input
               type="password"
-              className={formStyles.input}
+              className="w-full p-2 border border-gray-300 rounded-lg bg-duolingo-dark text-duolingo-light"
               id="newPassword"
               value={newPassword}
               onChange={handleChange}
               required
             />
-          </label>
-          <label className={formStyles.label}>
-            Confirm New Password:
+          </div>
+          <div>
+            <label className="block text-duolingo-light">
+              Confirm New Password:
+            </label>
             <input
               type="password"
-              className={formStyles.input}
+              className="w-full p-2 border border-gray-300 rounded-lg bg-duolingo-dark text-duolingo-light"
               id="confirmPassword"
               value={confirmPassword}
               onChange={handleChange}
               required
             />
-          </label>
+          </div>
           <button
             type="submit"
-            className={buttonStyles.primary}
+            className="w-full py-2 bg-duolingo-green text-duolingo-light rounded-lg hover:bg-green-600 transition duration-200"
             disabled={loading}
           >
             {loading ? "Changing..." : "Change Password"}
           </button>
         </form>
-        <button className={buttonStyles.logout} onClick={handleLogOut}>
+        <button
+          className="w-full py-2 mt-4 bg-red-500 text-duolingo-light rounded-lg hover:bg-red-600 transition duration-200"
+          onClick={handleLogOut}
+        >
           Logout
         </button>
       </div>
