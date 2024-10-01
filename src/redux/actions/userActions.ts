@@ -1,153 +1,130 @@
-// ==============================
-// Importing Redux Toolkit and Axios
-// ==============================
-import { createAsyncThunk } from "@reduxjs/toolkit";
-import axios from "axios";
-import { RootState } from "../store/store";
+import { AppDispatch } from "../store/store";
 
-// ==============================
-// Helper function to get token from state
-// ==============================
-const getAuthToken = (state: RootState) => state.auth.token;
+export const fetchUserProfile = () => async (dispatch: AppDispatch) => {
+  dispatch({ type: "USER_PROFILE_REQUEST" });
+  try {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      console.error("No userId found in localStorage");
+      return;
+    }
+    const response = await fetch(`/api/user/points/`, {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    const data = await response.json();
 
-// ==============================
-// Fetch User Profile
-// ==============================
-export const fetchUserProfile = createAsyncThunk(
-  "user/fetchUserProfile",
-  async (_, thunkAPI) => {
+    if (response.ok) {
+      dispatch({ type: "USER_PROFILE_SUCCESS", payload: data });
+    } else {
+      dispatch({ type: "USER_PROFILE_FAIL", payload: data.message });
+    }
+  } catch (error) {
+    dispatch({
+      type: "USER_PROFILE_FAIL",
+      payload: "Failed to fetch user profile",
+    });
+  }
+};
+
+export const updateUserProfile =
+  (profileData: { username: string; email: string }) =>
+  async (dispatch: AppDispatch) => {
+    dispatch({ type: "UPDATE_PROFILE_REQUEST" });
     try {
-      const state = thunkAPI.getState() as RootState;
-      const token = getAuthToken(state);
-
-      if (!token) {
-        return thunkAPI.rejectWithValue("No auth token available");
+      const userId = localStorage.getItem("userId");
+      const token = localStorage.getItem("token");
+      if (!userId) {
+        console.error("No userId found in localStorage");
+        return;
       }
 
-      const response = await axios.get("http://localhost:1274/api/user/me", {
+      const response = await fetch(`/api/user/update/${userId}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(profileData),
+      });
+
+      const data = await response.json();
+      if (response.ok) {
+        dispatch({ type: "UPDATE_PROFILE_SUCCESS", payload: data });
+      } else {
+        dispatch({ type: "UPDATE_PROFILE_FAIL", payload: data.message });
+      }
+    } catch (error) {
+      dispatch({
+        type: "UPDATE_PROFILE_FAIL",
+        payload: "Failed to update profile",
+      });
+    }
+  };
+
+export const updateUserProfileWithPicture =
+  (formData: FormData) => async (dispatch: AppDispatch) => {
+    dispatch({ type: "UPDATE_PROFILE_REQUEST" });
+    try {
+      const userId = localStorage.getItem("userId");
+      const token = localStorage.getItem("token");
+      if (!userId) {
+        console.error("No userId found in localStorage");
+        return;
+      }
+
+      const response = await fetch(`/api/user/update/${userId}`, {
+        method: "PUT",
         headers: {
           Authorization: `Bearer ${token}`,
         },
+        body: formData,
       });
 
-      console.log("Fetched user profile:", response.data);
-      return response.data;
-    } catch (error: any) {
-      console.error("Error fetching user profile:", error);
-      return thunkAPI.rejectWithValue(
-        error.response?.data?.message || "Failed to fetch user profile"
-      );
+      const data = await response.json();
+      if (response.ok) {
+        dispatch({ type: "UPDATE_PROFILE_SUCCESS", payload: data });
+      } else {
+        dispatch({ type: "UPDATE_PROFILE_FAIL", payload: data.message });
+      }
+    } catch (error) {
+      dispatch({
+        type: "UPDATE_PROFILE_FAIL",
+        payload: "Failed to update profile",
+      });
     }
-  }
-);
+  };
 
-// ==============================
-// Update User Profile
-// ==============================
-export const updateUserProfile = createAsyncThunk(
-  "user/updateUserProfile",
-  async (updatedData: { username: string; email: string }, thunkAPI) => {
+export const updateUserPassword =
+  (passwordData: { currentPassword: string; newPassword: string }) =>
+  async (dispatch: AppDispatch) => {
+    dispatch({ type: "UPDATE_PASSWORD_REQUEST" });
     try {
-      const state = thunkAPI.getState() as RootState;
-      const token = getAuthToken(state);
-
-      if (!token) {
-        return thunkAPI.rejectWithValue("No auth token available");
+      const userId = localStorage.getItem("userId");
+      const token = localStorage.getItem("token");
+      if (!userId) {
+        console.error("No userId found in localStorage");
+        return;
       }
 
-      const response = await axios.put(
-        "http://localhost:1274/api/user/me/profile",
-        updatedData,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+      const response = await fetch(`/api/user/update/${userId}/password`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(passwordData),
+      });
 
-      console.log("Updated user profile:", response.data);
-      return response.data;
-    } catch (error: any) {
-      console.error("Error updating user profile:", error);
-      return thunkAPI.rejectWithValue(
-        error.response?.data?.message || "Failed to update profile"
-      );
-    }
-  }
-);
-
-// ==============================
-// Update User Profile with Picture
-// ==============================
-export const updateUserProfileWithPicture = createAsyncThunk(
-  "user/updateUserProfileWithPicture",
-  async (formData: FormData, thunkAPI) => {
-    try {
-      const state = thunkAPI.getState() as RootState;
-      const token = getAuthToken(state);
-
-      if (!token) {
-        return thunkAPI.rejectWithValue("No auth token available");
+      const data = await response.json();
+      if (response.ok) {
+        dispatch({ type: "UPDATE_PASSWORD_SUCCESS", payload: data });
+      } else {
+        dispatch({ type: "UPDATE_PASSWORD_FAIL", payload: data.message });
       }
-
-      const response = await axios.put(
-        "http://localhost:1274/api/user/me/profile",
-        formData,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "multipart/form-data",
-          },
-        }
-      );
-
-      console.log("Updated profile with picture:", response.data);
-      return response.data;
-    } catch (error: any) {
-      console.error("Error updating profile with picture:", error);
-      return thunkAPI.rejectWithValue(
-        error.response?.data?.message || "Failed to update profile with picture"
-      );
+    } catch (error) {
+      dispatch({
+        type: "UPDATE_PASSWORD_FAIL",
+        payload: "Failed to update password",
+      });
     }
-  }
-);
-
-// ==============================
-// Update User Password
-// ==============================
-export const updateUserPassword = createAsyncThunk(
-  "user/updateUserPassword",
-  async (
-    updatedData: { currentPassword: string; newPassword: string },
-    thunkAPI
-  ) => {
-    try {
-      const state = thunkAPI.getState() as RootState;
-      const token = getAuthToken(state);
-
-      if (!token) {
-        return thunkAPI.rejectWithValue("No auth token available");
-      }
-
-      console.log("Sending password update request:", updatedData);
-
-      const response = await axios.put(
-        "http://localhost:1274/api/user/me/password",
-        updatedData,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-
-      console.log("Password updated successfully:", response.data);
-      return response.data;
-    } catch (error: any) {
-      console.error("Error updating password:", error);
-      return thunkAPI.rejectWithValue(
-        error.response?.data?.message || "Failed to update password"
-      );
-    }
-  }
-);
+  };

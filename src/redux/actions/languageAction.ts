@@ -15,7 +15,9 @@ export const fetchLanguages = createAsyncThunk<Language[], void>(
       const response = await axios.get("/api/languages");
       return response.data;
     } catch (error: any) {
-      return thunkAPI.rejectWithValue(error.response?.data?.message || "Failed to fetch languages");
+      return thunkAPI.rejectWithValue(
+        error.response?.data?.message || "Failed to fetch languages"
+      );
     }
   }
 );
