@@ -80,11 +80,12 @@ const UserProfile: React.FC = () => {
     async (e: React.FormEvent) => {
       e.preventDefault();
       const userId = localStorage.getItem("userId");
-      if (!userId) {
-        alert("Please log in again.");
-        router.push("/login");
-        return;
-      }
+      console.log(userId);
+      // if (!userId) {
+      //   alert("Please log in again.");
+      //   router.push("/login");
+      //   return;
+      // }
       if (profilePicture) {
         const formData = new FormData();
         formData.append("username", username);
