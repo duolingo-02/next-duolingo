@@ -6,18 +6,15 @@ import { incrementLives } from "../../redux/actions/gameActions";
 
 interface GameBarProps {
   initialTimerValue: number;
-  lives?: number;
-  points?: number;
-  progress?: number;
+  lives: number;
+  points: number;
+  progress: number;
 }
 
-const GameBar: React.FC<GameBarProps> = ({ initialTimerValue }) => {
+const GameBar: React.FC<GameBarProps> = ({ initialTimerValue, lives, points, progress }) => {
   const dispatch = useDispatch();
-  const lives = useSelector((state: RootState) => state.game.lives);
-  const coins = useSelector((state: RootState) => state.game.coins);
   const extraLives = useSelector((state: RootState) => state.game.extraLives);
   const userProfile = useSelector((state: RootState) => state.user.profile);
-  const progressPercentage = useSelector((state: RootState) => state.game.progressPercentage);
 
   const [isOverallProgress, setIsOverallProgress] = useState(true);
   const [timerValue, setTimerValue] = useState(initialTimerValue);
@@ -56,7 +53,6 @@ const GameBar: React.FC<GameBarProps> = ({ initialTimerValue }) => {
       <div className="mx-auto flex justify-between items-center">
         {/* Left section: Logo and menu */}
         <div className="flex items-center space-x-4">
-          
           <button className="text-white">    
           </button>
         </div>
@@ -84,10 +80,10 @@ const GameBar: React.FC<GameBarProps> = ({ initialTimerValue }) => {
             <div className="relative w-40 h-6 bg-gray-200 rounded-full">
               <div
                 className="absolute left-0 h-full bg-green-500 rounded-full"
-                style={{ width: `${isOverallProgress ? overallProgress : progressPercentage}%` }}
+                style={{ width: `${isOverallProgress ? overallProgress : progress}%` }}
               />
               <span className="absolute inset-0 flex items-center justify-center text-white text-sm">
-                {isOverallProgress ? `${overallProgress}%` : `${progressPercentage}%`}
+                {isOverallProgress ? `${overallProgress}%` : `${progress}%`}
               </span>
             </div>
             <button
@@ -98,10 +94,10 @@ const GameBar: React.FC<GameBarProps> = ({ initialTimerValue }) => {
             </button>
           </div>
 
-          {/* Coins Section */}
+          {/* Points Section */}
           <div className="flex items-center">
             <Image src="/assets/icons/euro.svg" alt="Coin" width={24} height={24} className="w-6 h-6" />
-            <span className="ml-2 font-bold text-white">{coins}</span>
+            <span className="ml-2 font-bold text-white">{points}</span>
           </div>
         </div>
 
