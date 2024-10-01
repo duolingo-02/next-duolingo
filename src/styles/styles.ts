@@ -87,14 +87,11 @@ export const spacingStyles = {
 
 // Styles spécifiques au profil
 export const profileStyles = {
-  pictureContainer: "w-24 h-24 mb-4",
+  pictureContainer: "w-24 h-24 mb-4 flex justify-center items-center",
   picture:
     "object-cover w-full h-full border-4 border-duolingoBlue rounded-full shadow-lg",
   username: "mt-4 text-4xl font-bold text-duolingoLight text-center",
-  sectionTitle: "mb-4 text-2xl font-semibold text-duolingoGreen",
-  bioText: "text-lg text-duolingoGray",
   profileDescription: "text-center text-duolingoGray mt-2",
-  profileActions: "flex items-center justify-between mt-6",
 };
 
 // Styles spécifiques aux formulaires

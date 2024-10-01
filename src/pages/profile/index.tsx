@@ -150,8 +150,51 @@ const UserProfile: React.FC = () => {
               onChange={handleChange}
             />
           </label>
+          <label className={formStyles.label}>
+            Profile Picture:
+            <input
+              type="file"
+              className={formStyles.input}
+              onChange={handleImageChange}
+            />
+          </label>
           <button type="submit" className={buttonStyles.primary}>
             Update Profile
+          </button>
+        </form>
+        <form className={formStyles.formGroup} onSubmit={handlePasswordSubmit}>
+          <label className={formStyles.label}>
+            Current Password:
+            <input
+              type="password"
+              className={formStyles.input}
+              id="currentPassword"
+              value={currentPassword}
+              onChange={handleChange}
+            />
+          </label>
+          <label className={formStyles.label}>
+            New Password:
+            <input
+              type="password"
+              className={formStyles.input}
+              id="newPassword"
+              value={newPassword}
+              onChange={handleChange}
+            />
+          </label>
+          <label className={formStyles.label}>
+            Confirm New Password:
+            <input
+              type="password"
+              className={formStyles.input}
+              id="confirmPassword"
+              value={confirmPassword}
+              onChange={handleChange}
+            />
+          </label>
+          <button type="submit" className={buttonStyles.primary}>
+            Change Password
           </button>
         </form>
         <button className={buttonStyles.logout} onClick={handleLogOut}>
@@ -161,5 +204,4 @@ const UserProfile: React.FC = () => {
     </div>
   );
 };
-
 export default UserProfile;
