@@ -23,13 +23,12 @@ const GameWrapper: React.FC<{ children: React.ReactNode }> = ({ children }) => (
 const AdminWrapper: React.FC<{ children: React.ReactNode }> = ({ children }) => (
   <div className="flex flex-col min-h-screen bg-gray-100">{children}</div>
 )
-
 const NavbarWrapper: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const { isAuthenticated, logoutUser } = useAuth()
   return (
     <>
       <Navbar isAuthenticated={isAuthenticated} logout={logoutUser} />
-      <div className="pb-24 mt-28 md:pb-12 md:mt-12">{children}</div>
+      <div className="pb-24 md:pb-12">{children}</div>
     </>
   )
 }
@@ -50,12 +49,12 @@ const LayoutWrapper: React.FC<{
     )
   }
 
-  if (useGameLayout) {
-    content = <GameWrapper>{content}</GameWrapper>
+  if (withNavbar) {
+    content = <NavbarWrapper>{content}</NavbarWrapper>
   }
 
-  if (withNavbar && !forAdmin) {
-    content = <NavbarWrapper>{content}</NavbarWrapper>
+  if (useGameLayout) {
+    content = <GameWrapper>{content}</GameWrapper>
   }
 
   return <>{content}</>
@@ -80,7 +79,6 @@ const ProtectedRoute: React.FC<{
 
   return <>{children}</>
 }
-
 function MyApp({ Component, pageProps }: AppProps) {
   const router = useRouter()
   const currentRoute = ROUTES.find((route: RouteConfig) => route.path === router.pathname)
@@ -88,18 +86,20 @@ function MyApp({ Component, pageProps }: AppProps) {
   return (
     <Provider store={store}>
       <QueryClientProvider client={queryClient}>
-        <ProtectedRoute
-          isProtected={currentRoute?.isProtected}
-          forAdmin={currentRoute?.forAdmin}
-        >
-          <LayoutWrapper
-            withNavbar={currentRoute?.withNavbar}
-            useGameLayout={currentRoute?.useGameLayout}
+        <div className="app-container">
+          <ProtectedRoute
+            isProtected={currentRoute?.isProtected}
             forAdmin={currentRoute?.forAdmin}
           >
-            <Component {...pageProps} />
-          </LayoutWrapper>
-        </ProtectedRoute>
+            <LayoutWrapper
+              withNavbar={currentRoute?.withNavbar}
+              useGameLayout={currentRoute?.useGameLayout}
+              forAdmin={currentRoute?.forAdmin}
+            >
+              <Component {...pageProps} />
+            </LayoutWrapper>
+          </ProtectedRoute>
+        </div>
       </QueryClientProvider>
     </Provider>
   )

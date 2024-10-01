@@ -16,6 +16,7 @@ export interface Lesson {
   correctOrder: string[] | null;
   isTrue: boolean | null;
   points: number;
+  correctAnswer?: string;
   languageId: number;
   createdAt: string;
   updatedAt: string;
@@ -53,15 +54,18 @@ export type LanguageCardProps = {
 // Type definition for MultipleChoiceQuiz props
 export interface MultipleChoiceQuizProps {
   questions: {
+    id: number;
     question: string;
     options: string[];
     answer: string;
   }[];
   language: string;
-  onComplete: (points: number) => void;
-  onIncorrectAnswer: () => void;
-  updateProgress: () => void;
+  onAnswer: (isCorrect: boolean) => void;
+  onBack: () => void;
+  onNext: () => void;
+  isLastQuestion: boolean;
 }
+
 
 // Type definition for the QuizData
 export interface Lesson {
@@ -85,17 +89,17 @@ export interface Lesson {
 
 
 // Type definition for SentenceOrderQuiz props
-export interface SentenceOrderProps {
-  questions: Array<{
-    question: string;
-    options: string[];
-    answer: string;
+
+export interface SentenceOrderQuizProps {
+  questions: {
     correctOrder: string[];
-  }>;
+    scrambledSentence: string[];
+  }[];
   language: string;
-  onComplete: (points: number) => void;
-  onIncorrectAnswer: () => void;
-  updateProgress: () => void;
+  onAnswer: (isCorrect: boolean) => void;
+  onBack: () => void;
+  onNext: () => void;
+  isLastQuestion: boolean;
 }
 
 // Type definition for StageList component props
@@ -110,7 +114,15 @@ export interface TrueFalseQuizProps {
     isTrue: boolean;
   }[];
   language: string;
-  onComplete: (points: number) => void;
-  onIncorrectAnswer: () => void;
-  updateProgress: () => void;
+  onAnswer: (isCorrect: boolean) => void;
+  onBack: () => void;
+  onNext: () => void;
+  isLastQuestion: boolean;
+  lives: number;
+  points: number;
+  progress: number;
 }
+
+
+
+

@@ -5,12 +5,15 @@ import gameReducer from "../reducers/gameReducer";
 import languageReducer from "../reducers/languageReducer";
 import { userReducer } from "../reducers/userReducers";
 
+import gameReducer2 from "../slices/gameSlice";
+
 export const store = configureStore({
   reducer: {
     user: userReducer,
     auth: authReducer,
     language: languageReducer,
     game: gameReducer,
+    game2: gameReducer2,
   },
 });
 

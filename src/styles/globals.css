@@ -25,3 +25,17 @@ body {
     text-wrap: balance;
   }
 }
+
+.app-container {
+  height: 100vh;
+  overflow-y: auto;
+}
+
+html, body {
+  height: 100%;
+  overflow: hidden;
+}
+
+#root {
+  height: 100%;
+}
