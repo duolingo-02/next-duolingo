@@ -6,7 +6,7 @@ import languageReducer from "../reducers/languageReducer";
 import { userReducer } from "../reducers/userReducers";
 
 import gameReducer2 from "../slices/gameSlice";
-
+//
 export const store = configureStore({
   reducer: {
     user: userReducer,
