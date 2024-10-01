@@ -8,7 +8,8 @@ import { Lesson } from '../../types/Game';
 import { useDispatch } from 'react-redux';
 import { incrementEnergy, incrementProgressPercentage, decrementLives } from '../../redux/actions/gameActions';
 import { useDecodeToken } from '../../hooks/useDecode';
-
+import GameBar from './GameBar';
+import GameContainer from './GameContainer';
 const Play: React.FC = () => {
   const router = useRouter();
   const { languageId, stageId } = router.query;
@@ -181,14 +182,23 @@ const Play: React.FC = () => {
         return <div>Unknown quiz type: {currentLesson.type}</div>;
     }
   }
-
-  return (
-    <div>
-      
-      {renderQuiz()}
-      
+return (
+  <div className="min-h-screen bg-gradient-to-br from-gray-800 via-gray-900 to-black relative overflow-hidden flex flex-col">
+    <div className="absolute inset-0 bg-nebula opacity-10"></div>
+    <div className="relative z-10 flex-grow flex flex-col">
+      <GameBar 
+        initialTimerValue={300} 
+        lives={lives}
+        points={points}
+        progress={progress}
+      />
+      <div className="flex-grow">
+        <GameContainer progress={progress}>
+          {renderQuiz()}
+        </GameContainer>
+      </div>
     </div>
-  );
-};
-
+  </div>
+);
+}
 export default Play;

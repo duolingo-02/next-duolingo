@@ -15,7 +15,7 @@ const queryClient = new QueryClient();
 
 const GameWrapper: React.FC<{ children: React.ReactNode }> = ({ children }) => (
   <>
-    <GameBar initialTimerValue={10} />
+    <GameBar initialTimerValue={10} lives={3} points={0} progress={0} />
     <div>{children}</div>
   </>
 );
