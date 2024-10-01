@@ -1,8 +1,6 @@
-'use client'
-
-import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { useRouter } from 'next/router';
+import axios from "axios";
 import LockedIcon from "../../assets/icons/closed.svg";
 import { useDecodeToken } from "../../hooks/useDecode";
 import { containerStyles, typographyStyles } from "../../styles/styles";
@@ -17,6 +15,8 @@ const LessonsStages: React.FC<{ languageId: number }> = ({ languageId }) => {
 
   const decodedToken = useDecodeToken();
   const userId = decodedToken?.userId;
+
+
 
   useEffect(() => {
     const fetchLessonsAndProgress = async () => {
@@ -84,9 +84,7 @@ const LessonsStages: React.FC<{ languageId: number }> = ({ languageId }) => {
     });
   };
 
-  const handleStageClick = (stageId: number) => {
-    router.push(`/language/${languageId}/stages/${stageId}/play`);
-  };
+  
 
   const getStageProgress = (lessonId: number) => {
     if (progressData.length === 0) return { isCompleted: false, progress: 0 };
@@ -113,6 +111,10 @@ const LessonsStages: React.FC<{ languageId: number }> = ({ languageId }) => {
       </div>
     );
   }
+
+  const handleStageClick = (lessonId: number) => {
+    router.push(`/language/${languageId}/stages/${lessonId}/play?lessonId=${lessonId}`);
+  };
 
   return (
     <div className={`${containerStyles.fullWidthCenter} p-4`}>

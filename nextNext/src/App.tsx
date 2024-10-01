@@ -15,7 +15,7 @@ import GameBar from "./components/games/GameBar";
 import Navbar from "./components/layout/Navbar";
 
 // Route configuration and type definitions
-import { ROUTES } from './config/routesConfig'// Import ROUTES array
+import { ROUTES } from "./config/routesConfig"; // Import ROUTES array
 import { RouteConfig } from "./types/RouteConfig";
 
 // ==============================
