@@ -2,7 +2,7 @@
 // Importing React and Navigation
 // ==============================
 import React from "react";
-import { useNavigate } from "react-router-dom";
+import { useRouter } from "next/router";
 
 // ==============================
 // Importing Styles
@@ -20,11 +20,11 @@ import {
  * Allows the user to navigate back to the previous page.
  */
 const TermsAndConditions: React.FC = () => {
-  const navigate = useNavigate();
+  const router = useRouter();
 
   // Handle back button click to navigate to the previous page
   const handleBackClick = () => {
-    navigate(-1); // Navigate back
+    router.back(); // Navigate back using Next.js router
   };
 
   return (
@@ -43,7 +43,7 @@ const TermsAndConditions: React.FC = () => {
         </h2>
 
         {/* Terms Content */}
-        <div className="mb-4 text-center" style={{ color: 'Silver' }}>
+        <div className="mb-4 text-center" style={{ color: "Silver" }}>
           <p>
             Welcome to Lingoleap! By accessing or using our services, you agree
             to be bound by these terms and conditions.

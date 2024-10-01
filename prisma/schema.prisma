@@ -126,7 +126,7 @@ model UserAchievement {
 enum QuestionType {
   MULTIPLE_CHOICE
   ORDERING
-   TRUE_FALSE
+  TRUE_FALSE
 }
 
 enum ProgressStatus {
@@ -139,3 +139,7 @@ enum LessonType {
   ORDER
   TRUE_FALSE
 }
+
+
+
+

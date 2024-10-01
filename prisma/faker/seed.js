@@ -19,13 +19,14 @@ async function seedDatabase() {
     // await questionFaker.up(prisma);
     // await choiceFaker.up(prisma);
     // await achievementFaker.up(prisma);
-
+    
     console.log("Seeding completed successfully.");
   } catch (error) {
     console.error("Seeding failed:", error);
   }
 }
 
-seedDatabase().finally(async () => {
-  await prisma.$disconnect();
-});
+seedDatabase()
+  .finally(async () => {
+    await prisma.$disconnect();
+  });
