@@ -30,7 +30,7 @@ const Login: React.FC = () => {
       ).unwrap();
   
       localStorage.setItem("token", response.token);
-      
+      console.log()
       console.log("Token set in localStorage:", response.token);
       router.push("/");
     } catch (err) {

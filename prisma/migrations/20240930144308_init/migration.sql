@@ -48,6 +48,7 @@ CREATE TABLE `LessonsUsers` (
     `userId` INTEGER NOT NULL,
     `lessonId` INTEGER NOT NULL,
 
+    UNIQUE INDEX `LessonsUsers_userId_lessonId_key`(`userId`, `lessonId`),
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
