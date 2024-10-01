@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useRouter } from 'next/router';
-import Link from 'next/link';
+import { useRouter } from "next/router";
+import Link from "next/link";
 
 import { login } from "../../redux/actions/authActions";
 import { AppDispatch, RootState } from "../../redux/store/store";
@@ -28,10 +28,10 @@ const Login: React.FC = () => {
       const response = await dispatch(
         login({ email, passwordHash: password })
       ).unwrap();
-  
-      localStorage.setItem("token", response.token);
-      console.log()
-      console.log("Token set in localStorage:", response.token);
+
+      // localStorage.setItem("token", response.token);
+
+      // console.log("Token set in localStorage:", response.token);
       router.push("/");
     } catch (err) {
       const errorMessage = (err as any).message || "Login failed";
