@@ -9,7 +9,7 @@ const nextConfig = {
     return config;
   },
   images: {
-    domains: ['cdn.countryflags.com'],
+    domains: ['cdn.countryflags.com','loremflickr.com', 'picsum.photos'],
     remotePatterns: [
       {
         protocol: 'https',
