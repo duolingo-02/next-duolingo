@@ -4,6 +4,10 @@ export const fetchUserProfile = () => async (dispatch: AppDispatch) => {
   dispatch({ type: "USER_PROFILE_REQUEST" });
   try {
     const userId = localStorage.getItem("userId");
+    if (!userId) {
+      console.error("No userId found in localStorage");
+      return;
+    }
     const response = await fetch(`/api/user/points/${userId}`);
     const data = await response.json();
 
@@ -27,6 +31,10 @@ export const updateUserProfile =
     try {
       const userId = localStorage.getItem("userId");
       const token = localStorage.getItem("token");
+      if (!userId) {
+        console.error("No userId found in localStorage");
+        return;
+      }
 
       const response = await fetch(`/api/user/update/${userId}`, {
         method: "PUT",
@@ -57,6 +65,10 @@ export const updateUserProfileWithPicture =
     try {
       const userId = localStorage.getItem("userId");
       const token = localStorage.getItem("token");
+      if (!userId) {
+        console.error("No userId found in localStorage");
+        return;
+      }
 
       const response = await fetch(`/api/user/update/${userId}`, {
         method: "PUT",
@@ -87,8 +99,12 @@ export const updateUserPassword =
     try {
       const userId = localStorage.getItem("userId");
       const token = localStorage.getItem("token");
+      if (!userId) {
+        console.error("No userId found in localStorage");
+        return;
+      }
 
-      const response = await fetch(`/api/user/update/${userId}`, {
+      const response = await fetch(`/api/user/update/${userId}/password`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",

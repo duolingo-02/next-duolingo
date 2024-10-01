@@ -79,6 +79,12 @@ const UserProfile: React.FC = () => {
   const handleProfileSubmit = useCallback(
     async (e: React.FormEvent) => {
       e.preventDefault();
+      const userId = localStorage.getItem("userId");
+      if (!userId) {
+        alert("Please log in again.");
+        router.push("/login");
+        return;
+      }
       if (profilePicture) {
         const formData = new FormData();
         formData.append("username", username);
@@ -89,7 +95,7 @@ const UserProfile: React.FC = () => {
         await dispatch(updateUserProfile({ username, email }));
       }
     },
-    [dispatch, username, email, profilePicture]
+    [dispatch, username, email, profilePicture, router]
   );
 
   const handlePasswordSubmit = useCallback(
@@ -98,6 +104,12 @@ const UserProfile: React.FC = () => {
       if (newPassword !== confirmPassword) {
         return alert("Passwords do not match");
       }
+      const userId = localStorage.getItem("userId");
+      if (!userId) {
+        alert("Please log in again.");
+        router.push("/login");
+        return;
+      }
       await dispatch(
         updateUserPassword({
           currentPassword,
@@ -105,7 +117,7 @@ const UserProfile: React.FC = () => {
         })
       );
     },
-    [dispatch, currentPassword, newPassword, confirmPassword]
+    [dispatch, currentPassword, newPassword, confirmPassword, router]
   );
 
   const handleLogOut = useCallback(() => {
@@ -204,4 +216,5 @@ const UserProfile: React.FC = () => {
     </div>
   );
 };
+
 export default UserProfile;
