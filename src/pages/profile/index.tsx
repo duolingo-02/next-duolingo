@@ -1,3 +1,5 @@
+"use client";
+
 import React, { useCallback, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { logout } from "../../redux/actions/authActions";
@@ -18,6 +20,7 @@ import {
 } from "../../styles/styles";
 
 const UserProfile: React.FC = () => {
+  const [id, setId] = useState("");
   const dispatch = useDispatch<AppDispatch>();
   const router = useRouter();
 
@@ -37,6 +40,7 @@ const UserProfile: React.FC = () => {
 
   const [profilePicture, setProfilePicture] = useState<File | null>(null);
   const [previewImage, setPreviewImage] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
 
   const { username, email, currentPassword, newPassword, confirmPassword } =
     formState;
@@ -79,24 +83,36 @@ const UserProfile: React.FC = () => {
   const handleProfileSubmit = useCallback(
     async (e: React.FormEvent) => {
       e.preventDefault();
-      const userId = localStorage.getItem("userId");
-      console.log(userId);
-      // if (!userId) {
-      //   alert("Please log in again.");
-      //   router.push("/login");
-      //   return;
-      // }
-      if (profilePicture) {
-        const formData = new FormData();
-        formData.append("username", username);
-        formData.append("email", email);
-        formData.append("profilePicture", profilePicture);
-        await dispatch(updateUserProfileWithPicture(formData));
-      } else {
-        await dispatch(updateUserProfile({ username, email }));
+      setLoading(true);
+      try {
+        const token = localStorage.getItem("token");
+        if (token) {
+          const payload = token.split(".")[1];
+          const decodedPayload = atob(payload);
+          const parsedPayload = JSON.parse(decodedPayload);
+          setId(parsedPayload.userId);
+        } else {
+          console.log("No token found in localStorage");
+        }
+
+        if (profilePicture) {
+          const formData = new FormData();
+          formData.append("username", username);
+          formData.append("email", email);
+          formData.append("profilePicture", profilePicture);
+          await dispatch(updateUserProfileWithPicture(formData));
+        } else {
+          await dispatch(updateUserProfile({ username, email }));
+        }
+        alert("Profile updated successfully!");
+      } catch (error) {
+        console.error("Failed to update profile:", error);
+        alert("An error occurred while updating your profile.");
+      } finally {
+        setLoading(false);
       }
     },
-    [dispatch, username, email, profilePicture, router]
+    [dispatch, username, email, profilePicture]
   );
 
   const handlePasswordSubmit = useCallback(
@@ -105,18 +121,27 @@ const UserProfile: React.FC = () => {
       if (newPassword !== confirmPassword) {
         return alert("Passwords do not match");
       }
-      const userId = localStorage.getItem("userId");
-      if (!userId) {
-        alert("Please log in again.");
-        router.push("/login");
-        return;
+      setLoading(true);
+      try {
+        const userId = localStorage.getItem("userId");
+        if (!userId) {
+          alert("Please log in again.");
+          router.push("/login");
+          return;
+        }
+        await dispatch(
+          updateUserPassword({
+            currentPassword,
+            newPassword,
+          })
+        );
+        alert("Password changed successfully!");
+      } catch (error) {
+        console.error("Failed to change password:", error);
+        alert("An error occurred while changing your password.");
+      } finally {
+        setLoading(false);
       }
-      await dispatch(
-        updateUserPassword({
-          currentPassword,
-          newPassword,
-        })
-      );
     },
     [dispatch, currentPassword, newPassword, confirmPassword, router]
   );
@@ -151,6 +176,7 @@ const UserProfile: React.FC = () => {
               id="username"
               value={username}
               onChange={handleChange}
+              required
             />
           </label>
           <label className={formStyles.label}>
@@ -161,6 +187,7 @@ const UserProfile: React.FC = () => {
               id="email"
               value={email}
               onChange={handleChange}
+              required
             />
           </label>
           <label className={formStyles.label}>
@@ -171,8 +198,12 @@ const UserProfile: React.FC = () => {
               onChange={handleImageChange}
             />
           </label>
-          <button type="submit" className={buttonStyles.primary}>
-            Update Profile
+          <button
+            type="submit"
+            className={buttonStyles.primary}
+            disabled={loading}
+          >
+            {loading ? "Updating..." : "Update Profile"}
           </button>
         </form>
         <form className={formStyles.formGroup} onSubmit={handlePasswordSubmit}>
@@ -184,6 +215,7 @@ const UserProfile: React.FC = () => {
               id="currentPassword"
               value={currentPassword}
               onChange={handleChange}
+              required
             />
           </label>
           <label className={formStyles.label}>
@@ -194,6 +226,7 @@ const UserProfile: React.FC = () => {
               id="newPassword"
               value={newPassword}
               onChange={handleChange}
+              required
             />
           </label>
           <label className={formStyles.label}>
@@ -204,10 +237,15 @@ const UserProfile: React.FC = () => {
               id="confirmPassword"
               value={confirmPassword}
               onChange={handleChange}
+              required
             />
           </label>
-          <button type="submit" className={buttonStyles.primary}>
-            Change Password
+          <button
+            type="submit"
+            className={buttonStyles.primary}
+            disabled={loading}
+          >
+            {loading ? "Changing..." : "Change Password"}
           </button>
         </form>
         <button className={buttonStyles.logout} onClick={handleLogOut}>
