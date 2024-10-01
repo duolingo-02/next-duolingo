@@ -20,7 +20,6 @@ import {
 } from "../../styles/styles";
 
 const UserProfile: React.FC = () => {
-  const [id, setId] = useState("");
   const dispatch = useDispatch<AppDispatch>();
   const router = useRouter();
 
@@ -45,12 +44,12 @@ const UserProfile: React.FC = () => {
   const { username, email, currentPassword, newPassword, confirmPassword } =
     formState;
 
+  // Fetch user profile when the component is mounted
   useEffect(() => {
-    if (!userProfile) {
-      dispatch(fetchUserProfile());
-    }
-  }, [dispatch, userProfile]);
+    dispatch(fetchUserProfile());
+  }, [dispatch]);
 
+  // Update the form state when the user profile data is fetched
   useEffect(() => {
     if (userProfile) {
       setFormState({
@@ -63,11 +62,13 @@ const UserProfile: React.FC = () => {
     }
   }, [userProfile]);
 
+  // Handle input change for profile update
   const handleChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     const { id, value } = e.target;
     setFormState((prev) => ({ ...prev, [id]: value }));
   }, []);
 
+  // Handle profile picture change
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
@@ -80,21 +81,12 @@ const UserProfile: React.FC = () => {
     }
   };
 
+  // Handle profile form submission
   const handleProfileSubmit = useCallback(
     async (e: React.FormEvent) => {
       e.preventDefault();
       setLoading(true);
       try {
-        const token = localStorage.getItem("token");
-        if (token) {
-          const payload = token.split(".")[1];
-          const decodedPayload = atob(payload);
-          const parsedPayload = JSON.parse(decodedPayload);
-          setId(parsedPayload.userId);
-        } else {
-          console.log("No token found in localStorage");
-        }
-
         if (profilePicture) {
           const formData = new FormData();
           formData.append("username", username);
@@ -115,6 +107,7 @@ const UserProfile: React.FC = () => {
     [dispatch, username, email, profilePicture]
   );
 
+  // Handle password change form submission
   const handlePasswordSubmit = useCallback(
     async (e: React.FormEvent) => {
       e.preventDefault();
@@ -123,12 +116,6 @@ const UserProfile: React.FC = () => {
       }
       setLoading(true);
       try {
-        const userId = localStorage.getItem("userId");
-        if (!userId) {
-          alert("Please log in again.");
-          router.push("/login");
-          return;
-        }
         await dispatch(
           updateUserPassword({
             currentPassword,
@@ -143,9 +130,10 @@ const UserProfile: React.FC = () => {
         setLoading(false);
       }
     },
-    [dispatch, currentPassword, newPassword, confirmPassword, router]
+    [dispatch, currentPassword, newPassword, confirmPassword]
   );
 
+  // Handle logout
   const handleLogOut = useCallback(() => {
     dispatch(logout());
     router.push("/login");

@@ -3,12 +3,14 @@ import { AppDispatch } from "../store/store";
 export const fetchUserProfile = () => async (dispatch: AppDispatch) => {
   dispatch({ type: "USER_PROFILE_REQUEST" });
   try {
-    const userId = localStorage.getItem("userId");
-    if (!userId) {
+    const token = localStorage.getItem("token");
+    if (!token) {
       console.error("No userId found in localStorage");
       return;
     }
-    const response = await fetch(`/api/user/points/${userId}`);
+    const response = await fetch(`/api/user/points/`, {
+      headers: { Authorization: `Bearer ${token}` },
+    });
     const data = await response.json();
 
     if (response.ok) {

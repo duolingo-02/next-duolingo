@@ -1,8 +1,9 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import prisma from "../../../../../lib/prisma";
-import { verifyToken } from "../../../../utils/auth";
 
-export default async function handler(
+import authMiddleware from "@/helpers/auth";
+import { ExtendedNextApiRequest } from "@/helpers/auth";
+export default authMiddleware(async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
@@ -10,7 +11,7 @@ export default async function handler(
     return res.status(405).json({ message: "Method not allowed" });
   }
 
-  const { id } = req.query;
+  const { id } = (req as ExtendedNextApiRequest).user;
 
   try {
     const user = await prisma.user.findUnique({
@@ -27,4 +28,4 @@ export default async function handler(
     console.error(error);
     res.status(500).json({ message: "Error retrieving user points" });
   }
-}
+});
