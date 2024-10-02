@@ -39,6 +39,9 @@ const Navbar: React.FC<NavbarProps> = ({ isAuthenticated, logout }) => {
 
   const isActive = (path: string) => router.pathname === path || (path === "/" && (router.pathname === "/" || router.pathname === "/home"));
 
+  
+
+
   return (
     <div>
       {/* Mobile Logo Bar */}
@@ -159,13 +162,12 @@ const Navbar: React.FC<NavbarProps> = ({ isAuthenticated, logout }) => {
 
         {/* Logout Button */}
         <div className="mt-auto">
-          {isAuthenticated && (
-            <button
-              className="w-full py-3 text-xl font-bold transition-transform duration-300 bg-red-500 rounded-full shadow-lg text-duolingoLight hover:bg-red-600 hover:scale-105"
-              onClick={logout}
-            >
-              Logout
-            </button>
+        {isAuthenticated && (
+      <Link
+        href="/login"
+        className="inline-block w-30 px-6 py-3 text-xl font-bold text-center transition-transform duration-300 bg-red-500 rounded-full shadow-lg text-duolingoLight hover:bg-red-600 hover:scale-105"      >
+          Logout
+      </Link>
           )}
         </div>
       </div>

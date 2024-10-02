@@ -1,99 +1,21 @@
-// ==============================
-// Importing React, Redux, and Navigation
-// ==============================
 import React, { useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { useRouter } from 'next/router'; // Keep this for Next.js navigation
+import { useRouter } from 'next/router';
+import Link from 'next/link';
+import Image from 'next/image';
+import { FaBars } from 'react-icons/fa';
 
-// ==============================
-// Importing Actions and Store
-// ==============================
-import { signup } from "../../redux/actions/authActions";
-import { AppDispatch, RootState } from "../../redux/store/store";
-
-// ==============================
-// Importing Styles
-// ==============================
-import {
-  buttonStyles,
-  containerStyles,
-  formStyles,
-  typographyStyles,
-} from "../../styles/styles";
-import Link from "next/link";
-
-/**
- * Signup Component Props
- */
-interface SignupProps {
-  // Define props here if needed
-}
-
-/**
- * Signup Component
- *
- * Handles user registration, including validation and submission of profile data.
- * Allows users to upload a profile picture and agree to terms before signing up.
- */
-const Signup: React.FC<SignupProps> = () => {
-  // ==============================
-  // Local State
-  // ==============================
+const Signup: React.FC = () => {
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
-  const [role, setRole] = useState("user");
   const [profilePicture, setProfilePicture] = useState<File | null>(null);
   const [previewImage, setPreviewImage] = useState<string | null>(null);
-  const [passwordError, setPasswordError] = useState<string | null>(null);
   const [agreedToTerms, setAgreedToTerms] = useState(false);
-
-  const dispatch = useDispatch<AppDispatch>();
-  const { loading, error } = useSelector((state: RootState) => state.auth);
+  const [errorMessage, setErrorMessage] = useState("");
+  const [loading, setLoading] = useState(false);
   const router = useRouter();
 
-  // ==============================
-  // Password Validation
-  // ==============================
-  const validatePassword = () => {
-    if (password !== confirmPassword) {
-      return "Passwords do not match.";
-    }
-    return null;
-  };
-
-  // ==============================
-  // Handle Form Submission
-  // ==============================
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    const passwordValidationError = validatePassword();
-    if (passwordValidationError) {
-      setPasswordError(passwordValidationError);
-      return;
-    }
-
-    // FormData to handle file upload
-    const formData = new FormData();
-    formData.append("username", username);
-    formData.append("email", email);
-    formData.append("passwordHash", password);
-    formData.append("role", role);
-    if (profilePicture) {
-      formData.append("file", profilePicture);
-    }
-
-    // Dispatch signup action and navigate to login upon success
-    dispatch(signup(formData))
-      .unwrap()
-      .then(() => router.push("/login")) // Next.js routing
-      .catch(() => {});
-  };
-
-  // ==============================
-  // Handle Image Upload
-  // ==============================
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
@@ -106,147 +28,149 @@ const Signup: React.FC<SignupProps> = () => {
     }
   };
 
+  const validatePassword = () => {
+    if (password !== confirmPassword) {
+      return "Passwords do not match.";
+    }
+    if (password.length < 8) {
+      return "Password must be at least 8 characters long.";
+    }
+    return null;
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setErrorMessage("");
+    setLoading(true);
+
+    const passwordError = validatePassword();
+    if (passwordError) {
+      setErrorMessage(passwordError);
+      setLoading(false);
+      return;
+    }
+
+    if (!agreedToTerms) {
+      setErrorMessage("You must agree to the terms and conditions");
+      setLoading(false);
+      return;
+    }
+
+    const formData = new FormData();
+    const userData = JSON.stringify({
+      username,
+      email,
+      passwordHash: password,
+    });
+    formData.append("data", userData);
+    if (profilePicture) {
+      formData.append("file", profilePicture);
+    }
+
+    try {
+      const response = await fetch('/api/register', {
+        method: 'POST',
+        body: formData,
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || "An error occurred during signup");
+      }
+
+      router.push("/login");
+    } catch (error: any) {
+      setErrorMessage(error.message || "An error occurred during signup");
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
-    <div className={`${containerStyles.fullScreenCenter} p-4`}>
-      <div className={containerStyles.secondCard}>
-        {/* Title and Subtitle */}
-        <h1
-          className={`${typographyStyles.heading1} text-blue-300 text-5xl text-center logoTitle`}
-        >
-          Lingoleap
-        </h1>
-        <h2 className={`${typographyStyles.heading2} mb-6 text-center`}>
-          Register
-        </h2>
-
-        {/* Display error message if signup fails */}
-        {error && (
-          <p className="mb-4 text-center text-red-500">
-            Signup failed. Please check your information.
-          </p>
-        )}
-
-        {/* Signup Form */}
-        <form onSubmit={handleSubmit} encType="multipart/form-data">
-          {/* Username Input */}
+    <div className="min-h-screen bg-duolingoDark flex flex-col justify-center items-center p-4">
+      <div className="w-full max-w-md">
+        <div className="flex justify-between items-center mb-8">
+          <div className="flex items-center">
+          <Image src="/assets/icons/icon.svg" alt="LingoLeap Logo" width={40} height={40} />
+            <h1 className="ml-2 text-3xl font-bold text-duolingoGreen">LINGOLEAP</h1>
+          </div>
+          <button className="text-duolingoLight">
+            <FaBars className="w-6 h-6" />
+          </button>
+        </div>
+        <h2 className="text-4xl font-bold text-center text-duolingoLight mb-8">Register</h2>
+        <form onSubmit={handleSubmit} className="space-y-4">
           <input
             type="text"
             placeholder="Username"
             value={username}
             onChange={(e) => setUsername(e.target.value)}
-            className={formStyles.input}
+            className="w-full px-4 py-3 rounded-full bg-duolingoLight text-duolingoDark placeholder-duolingoDark"
             required
           />
-
-          {/* Email Input */}
           <input
             type="email"
             placeholder="Email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            className={formStyles.input}
+            className="w-full px-4 py-3 rounded-full bg-duolingoLight text-duolingoDark placeholder-duolingoDark"
             required
           />
-
-          {/* Password Input */}
           <input
             type="password"
             placeholder="Password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            className={formStyles.input}
+            className="w-full px-4 py-3 rounded-full bg-duolingoLight text-duolingoDark placeholder-duolingoDark"
             required
           />
-
-          {/* Confirm Password Input */}
           <input
             type="password"
             placeholder="Confirm Password"
             value={confirmPassword}
             onChange={(e) => setConfirmPassword(e.target.value)}
-            className={formStyles.input}
+            className="w-full px-4 py-3 rounded-full bg-duolingoLight text-duolingoDark placeholder-duolingoDark"
             required
           />
-
-          {/* Display password error if validation fails */}
-          {passwordError && (
-            <p className="mb-4 text-center text-red-500">{passwordError}</p>
-          )}
-
-          {/* Role Selection */}
-          <select
-            value={role}
-            onChange={(e) => setRole(e.target.value)}
-            className={formStyles.input}
-          >
-            <option value="user">User</option>
-            <option value="admin">Admin</option>
-            <option value="teacher">Teacher</option>
-          </select>
-
-          {/* Profile Picture Upload */}
-          <div className="flex flex-col items-center mt-4 mb-4">
-            <div className="w-32 h-32 mb-4">
+          <div className="flex flex-col items-center space-y-2">
+            <div className="w-32 h-32 bg-duolingoLight rounded-full overflow-hidden">
               {previewImage ? (
-                <img
-                  src={previewImage}
-                  alt="Profile Preview"
-                  className="object-cover w-full h-full rounded-full"
-                />
+                <img src={previewImage} alt="Profile" className="w-full h-full object-cover" />
               ) : (
-                <div className="flex items-center justify-center w-full h-full bg-gray-200 rounded-full">
-                  <span className="text-gray-400">No Image</span>
-                </div>
+                <div className="flex items-center justify-center w-full h-full text-duolingoDark">No Image</div>
               )}
             </div>
-
-            <label className="block text-white">
-              <span className="mb-2">Profile Picture</span>
-              <input
-                type="file"
-                accept="image/*"
-                onChange={handleImageChange}
-                className={`${formStyles.uploadButton} py-2 border-none`}
-              />
+            <p className="text-duolingoLight">Profile Picture</p>
+            <label className="px-4 py-2 bg-duolingoGreen text-duolingoLight rounded-full cursor-pointer hover:bg-opacity-90 transition duration-200">
+              Choose File
+              <input type="file" className="hidden" onChange={handleImageChange} accept="image/*" />
             </label>
           </div>
-
-          {/* Terms Agreement */}
-          <div className="mb-4">
-            <label className="inline-flex items-center">
-              <input
-                type="checkbox"
-                checked={agreedToTerms}
-                onChange={(e) => setAgreedToTerms(e.target.checked)}
-                className="w-5 h-5 text-blue-500 form-checkbox"
-              />
-              <span className="ml-2 text-white">
-                I agree to the{" "}
-                <Link href="/terms" className="underline">
-                  terms and conditions
-                </Link>
-              </span>
+          <div className="flex items-center">
+            <input
+              type="checkbox"
+              checked={agreedToTerms}
+              onChange={(e) => setAgreedToTerms(e.target.checked)}
+              className="w-4 h-4 text-duolingoGreen border-duolingoLight rounded focus:ring-duolingoGreen"
+            />
+            <label className="ml-2 text-sm text-duolingoLight">
+              I agree to the <Link href="/terms" className="text-duolingoGreen hover:underline">terms and conditions</Link>
             </label>
           </div>
-
-          {/* Submit Button */}
+          {errorMessage && (
+            <p className="text-red-500 text-center">{errorMessage}</p>
+          )}
           <button
             type="submit"
-            className={`${
-              agreedToTerms
-                ? buttonStyles.primary
-                : "bg-gray-500 w-full py-3 text-xl font-bold text-duolingoLight rounded-full shadow-lg"
-            } mt-4 transition-opacity duration-300`}
+            className="w-full py-3 text-xl font-bold bg-duolingoGreen text-duolingoLight rounded-full hover:bg-opacity-90 transition duration-200"
             disabled={loading || !agreedToTerms}
           >
             {loading ? "Signing up..." : "Sign up"}
           </button>
         </form>
-
-        {/* Redirect to login */}
-        <p className="mt-4 text-center text-duolingoLight">
+        <p className="mt-6 text-center text-duolingoLight">
           Already have an account?{" "}
-          <Link href="/login" className="underline">
+          <Link href="/login" className="text-duolingoGreen hover:underline">
             Log in
           </Link>
         </p>
