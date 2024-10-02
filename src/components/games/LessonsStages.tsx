@@ -117,28 +117,27 @@ const LessonsStages: React.FC<{ languageId: number }> = ({ languageId }) => {
   };
 
   return (
-    <div className={`${containerStyles.fullWidthCenter} p-4`}>
-      <div className={containerStyles.card}>
-        <h1 className={`${typographyStyles.heading1} text-center`}>
+    <div className="container mx-auto px-4 py-8 mt-20"> {/* Added mt-20 for top margin */}
+      <div className="bg-duolingoDark2 rounded-lg shadow-lg p-8">
+        <h1 className="text-4xl font-bold text-duolingoLight text-center mb-8">
           Select a Level
         </h1>
-
-        <div className="grid grid-cols-2 gap-8 mt-8 md:grid-cols-4">
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6">
           {lessons.map((lesson, index) => {
             const { isCompleted, progress } = getStageProgress(lesson.id);
             const isUnlocked = isStageUnlocked(index);
-
+  
             return (
               <div
                 key={lesson.id}
                 className={`relative w-24 h-24 mx-auto rounded-full flex items-center justify-center ${
                   isUnlocked
-                    ? "bg-duolingoGreen text-duolingoLight hover:bg-green-600 shadow-lg"
+                    ? "bg-duolingoGreen text-duolingoLight hover:bg-duolingoGreenDark"
                     : "bg-duolingoGray text-duolingoDark"
                 } transform transition-transform duration-200 ${
                   isUnlocked
                     ? "hover:scale-110 cursor-pointer"
-                    : "opacity-70 hover:scale-105 cursor-not-allowed hover:opacity-50 "
+                    : "opacity-70 hover:scale-105 cursor-not-allowed hover:opacity-50"
                 }`}
                 onClick={() => isUnlocked && handleStageClick(lesson.id)}
               >
@@ -147,7 +146,7 @@ const LessonsStages: React.FC<{ languageId: number }> = ({ languageId }) => {
                 ) : isUnlocked ? (
                   <span className="text-2xl font-bold">{index + 1}</span>
                 ) : (
-                  <LockedIcon className="h-16 " />
+                  <LockedIcon className="h-16" />
                 )}
               </div>
             );
