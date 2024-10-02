@@ -130,32 +130,38 @@ const UserProfile: React.FC = () => {
   }, [dispatch, router]);
 
   return (
-    <div className="container-full-screen-center">
-      <div className="container-card">
-        <div className="flex justify-center mb-6">
+    <div className="container-full-screen-center p-2">
+      <div className="container-card max-w-xs mx-auto p-2 bg-white rounded-lg shadow-md">
+        <div className="flex justify-center mb-2">
           <Image
             src="https://static1.howtogeekimages.com/wordpress/wp-content/uploads/2023/09/duolingo-generic-hero.jpg"
             alt="Duolingo Owl"
-            width={80}
-            height={80}
+            width={30}
+            height={30}
           />
         </div>
-        <div className="flex justify-center mb-4">
+        <div className="flex justify-center mb-2">
           <img
-            className="profile-picture"
+            className="profile-picture w-12 h-12 rounded-full object-cover"
             src={previewImage || "/path-to-profile-pic.jpg"}
             alt="Profile"
           />
         </div>
-        <h2 className="profile-username">{username}</h2>
-        <p className="profile-description">Joined September 2023</p>
+        <h2 className="profile-username text-sm font-bold text-center mb-1">
+          {username}
+        </h2>
+        <p className="profile-description text-center text-gray-600 mb-2">
+          Joined September 2023
+        </p>
         {/* {loading && <Spinner />} Display spinner during loading */}
-        <form onSubmit={handleProfileSubmit}>
+        <form onSubmit={handleProfileSubmit} className="space-y-1">
           <div className="form-group">
-            <label className="form-label">Username</label>
+            <label className="form-label block text-gray-700 text-xs">
+              Username
+            </label>
             <input
               type="text"
-              className="form-input"
+              className="form-input w-full p-1 border border-gray-300 rounded text-xs"
               id="username"
               value={username}
               onChange={handleChange}
@@ -163,10 +169,12 @@ const UserProfile: React.FC = () => {
             />
           </div>
           <div className="form-group">
-            <label className="form-label">Email</label>
+            <label className="form-label block text-gray-700 text-xs">
+              Email
+            </label>
             <input
               type="email"
-              className="form-input"
+              className="form-input w-full p-1 border border-gray-300 rounded text-xs"
               id="email"
               value={email}
               onChange={handleChange}
@@ -174,24 +182,34 @@ const UserProfile: React.FC = () => {
             />
           </div>
           <div className="form-group">
-            <label className="form-label">Profile Picture</label>
+            <label className="form-label block text-gray-700 text-xs">
+              Profile Picture
+            </label>
             <input
               type="file"
-              className="form-input"
+              className="form-input w-full p-1 border border-gray-300 rounded text-xs"
               onChange={handleImageChange}
             />
           </div>
-          <button type="submit" className="button-primary" disabled={loading}>
+          <button
+            type="submit"
+            className="button-primary w-full py-1 bg-blue-500 text-white rounded text-xs"
+            disabled={loading}
+          >
             {loading ? "Updating..." : "Update Profile"}
           </button>
         </form>
-        <form className="mt-6" onSubmit={handlePasswordSubmit}>
-          {passwordError && <p className="text-red-500">{passwordError}</p>}
+        <form className="mt-2 space-y-1" onSubmit={handlePasswordSubmit}>
+          {passwordError && (
+            <p className="text-red-500 text-xs">{passwordError}</p>
+          )}
           <div className="form-group">
-            <label className="form-label">Current Password</label>
+            <label className="form-label block text-gray-700 text-xs">
+              Current Password
+            </label>
             <input
               type="password"
-              className="form-input"
+              className="form-input w-full p-1 border border-gray-300 rounded text-xs"
               id="currentPassword"
               value={currentPassword}
               onChange={handleChange}
@@ -199,10 +217,12 @@ const UserProfile: React.FC = () => {
             />
           </div>
           <div className="form-group">
-            <label className="form-label">New Password</label>
+            <label className="form-label block text-gray-700 text-xs">
+              New Password
+            </label>
             <input
               type="password"
-              className="form-input"
+              className="form-input w-full p-1 border border-gray-300 rounded text-xs"
               id="newPassword"
               value={newPassword}
               onChange={handleChange}
@@ -210,21 +230,30 @@ const UserProfile: React.FC = () => {
             />
           </div>
           <div className="form-group">
-            <label className="form-label">Confirm New Password</label>
+            <label className="form-label block text-gray-700 text-xs">
+              Confirm New Password
+            </label>
             <input
               type="password"
-              className="form-input"
+              className="form-input w-full p-1 border border-gray-300 rounded text-xs"
               id="confirmPassword"
               value={confirmPassword}
               onChange={handleChange}
               required
             />
           </div>
-          <button type="submit" className="button-primary" disabled={loading}>
+          <button
+            type="submit"
+            className="button-primary w-full py-1 bg-blue-500 text-white rounded text-xs"
+            disabled={loading}
+          >
             {loading ? "Changing..." : "Change Password"}
           </button>
         </form>
-        <button className="button-logout mt-4" onClick={handleLogOut}>
+        <button
+          className="button-logout mt-2 w-full py-1 bg-red-500 text-white rounded text-xs"
+          onClick={handleLogOut}
+        >
           Logout
         </button>
       </div>
