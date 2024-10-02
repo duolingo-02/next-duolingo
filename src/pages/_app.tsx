@@ -1,3 +1,5 @@
+'use client'
+
 import { QueryClient, QueryClientProvider } from 'react-query';
 import { AppProps } from 'next/app';
 import { Provider } from 'react-redux';

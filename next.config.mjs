@@ -15,11 +15,18 @@ const nextConfig = {
 
   // Image optimization settings
   images: {
+   
     domains: [
       "cdn.countryflags.com",
       "loremflickr.com",
       "picsum.photos",
       "static1.howtogeekimages.com", // Add the new domain here
+      "i.pinimg.com",
+      "img.freepik.com",
+      "www.freepnglogos.com",
+      "png.pngtree.com",
+      "media.istockphoto.com",
+      "cdn-icons-png.flaticon.com",
     ],
     remotePatterns: [
       {

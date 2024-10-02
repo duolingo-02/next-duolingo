@@ -9,7 +9,7 @@ import { useDispatch } from 'react-redux';
 import { incrementEnergy, incrementProgressPercentage, decrementLives } from '../../redux/actions/gameActions';
 import { useDecodeToken } from '../../hooks/useDecode';
 import GameBar from './GameBar';
-import VideoCamera from './VideoCamera';
+
 
 
 const Play: React.FC = () => {
@@ -189,21 +189,7 @@ const Play: React.FC = () => {
       points,
       progress,
     };
-  
-    if (useCameraMode) {
-      return (
-        <VideoCamera
-          key={currentLesson.id}
-          question={currentLesson.question}
-          quizType={currentLesson.type.toLowerCase() as "multiple" | "true_false" | "order"}
-          correctAnswer={currentLesson.answer || (currentLesson.isTrue ? 'True' : 'False') || currentLesson.correctOrder || ''}
-          options={currentLesson.options || undefined}
-scrambledSentence={currentLesson.scrambledSentence || undefined}
-          language={languageId === "2" ? "fr" : "en"}
-          {...commonProps}
-        />
-      );
-    }
+
   
     switch (currentLesson.type.toLowerCase()) {
       case 'multiple':

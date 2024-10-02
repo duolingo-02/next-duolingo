@@ -1,8 +1,19 @@
+// ==============================
+// Importing React, Redux, and Navigation
+// ==============================
 import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useRouter } from "next/router";
+import { useRouter } from 'next/router'; // Keep this for Next.js navigation
+
+// ==============================
+// Importing Actions and Store
+// ==============================
 import { signup } from "../../redux/actions/authActions";
 import { AppDispatch, RootState } from "../../redux/store/store";
+
+// ==============================
+// Importing Styles
+// ==============================
 import {
   buttonStyles,
   containerStyles,
@@ -11,7 +22,23 @@ import {
 } from "../../styles/styles";
 import Link from "next/link";
 
-const Signup: React.FC = () => {
+/**
+ * Signup Component Props
+ */
+interface SignupProps {
+  // Define props here if needed
+}
+
+/**
+ * Signup Component
+ *
+ * Handles user registration, including validation and submission of profile data.
+ * Allows users to upload a profile picture and agree to terms before signing up.
+ */
+const Signup: React.FC<SignupProps> = () => {
+  // ==============================
+  // Local State
+  // ==============================
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -26,6 +53,9 @@ const Signup: React.FC = () => {
   const { loading, error } = useSelector((state: RootState) => state.auth);
   const router = useRouter();
 
+  // ==============================
+  // Password Validation
+  // ==============================
   const validatePassword = () => {
     if (password !== confirmPassword) {
       return "Passwords do not match.";
@@ -33,6 +63,9 @@ const Signup: React.FC = () => {
     return null;
   };
 
+  // ==============================
+  // Handle Form Submission
+  // ==============================
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     const passwordValidationError = validatePassword();
@@ -41,6 +74,7 @@ const Signup: React.FC = () => {
       return;
     }
 
+    // FormData to handle file upload
     const formData = new FormData();
     formData.append("username", username);
     formData.append("email", email);
@@ -50,12 +84,16 @@ const Signup: React.FC = () => {
       formData.append("file", profilePicture);
     }
 
+    // Dispatch signup action and navigate to login upon success
     dispatch(signup(formData))
       .unwrap()
-      .then(() => router.push("/login"))
+      .then(() => router.push("/login")) // Next.js routing
       .catch(() => {});
   };
 
+  // ==============================
+  // Handle Image Upload
+  // ==============================
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
@@ -71,120 +109,83 @@ const Signup: React.FC = () => {
   return (
     <div className={`${containerStyles.fullScreenCenter} p-4`}>
       <div className={containerStyles.secondCard}>
+        {/* Title and Subtitle */}
         <h1
           className={`${typographyStyles.heading1} text-blue-300 text-5xl text-center logoTitle`}
         >
           Lingoleap
         </h1>
-
         <h2 className={`${typographyStyles.heading2} mb-6 text-center`}>
-          Sign Up
+          Register
         </h2>
 
+        {/* Display error message if signup fails */}
         {error && (
           <p className="mb-4 text-center text-red-500">
             Signup failed. Please check your information.
           </p>
         )}
 
-        <form onSubmit={handleSubmit}>
-          <div
-            className={`${formStyles.formGroup} w-full sm:w-2/3 md:w-1/3 mx-auto`}
-          >
-            <label className={formStyles.label} htmlFor="username">
-              Username
-            </label>
-            <input
-              type="text"
-              id="username"
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
-              className={formStyles.input}
-              required
-            />
-          </div>
+        {/* Signup Form */}
+        <form onSubmit={handleSubmit} encType="multipart/form-data">
+          {/* Username Input */}
+          <input
+            type="text"
+            placeholder="Username"
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
+            className={formStyles.input}
+            required
+          />
 
-          <div
-            className={`${formStyles.formGroup} w-full sm:w-2/3 md:w-1/3 mx-auto mt-4`}
-          >
-            <label className={formStyles.label} htmlFor="email">
-              Email
-            </label>
-            <input
-              type="email"
-              id="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              className={formStyles.input}
-              required
-            />
-          </div>
+          {/* Email Input */}
+          <input
+            type="email"
+            placeholder="Email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            className={formStyles.input}
+            required
+          />
 
-          <div
-            className={`${formStyles.formGroup} w-full sm:w-2/3 md:w-1/3 mx-auto mt-4`}
-          >
-            <label className={formStyles.label} htmlFor="password">
-              Password
-            </label>
-            <input
-              type="password"
-              id="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              className={formStyles.input}
-              required
-            />
-          </div>
+          {/* Password Input */}
+          <input
+            type="password"
+            placeholder="Password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            className={formStyles.input}
+            required
+          />
 
-          <div
-            className={`${formStyles.formGroup} w-full sm:w-2/3 md:w-1/3 mx-auto mt-4`}
-          >
-            <label className={formStyles.label} htmlFor="confirmPassword">
-              Confirm Password
-            </label>
-            <input
-              type="password"
-              id="confirmPassword"
-              value={confirmPassword}
-              onChange={(e) => setConfirmPassword(e.target.value)}
-              className={formStyles.input}
-              required
-            />
-            {passwordError && (
-              <p className={formStyles.errorText}>{passwordError}</p>
-            )}
-          </div>
+          {/* Confirm Password Input */}
+          <input
+            type="password"
+            placeholder="Confirm Password"
+            value={confirmPassword}
+            onChange={(e) => setConfirmPassword(e.target.value)}
+            className={formStyles.input}
+            required
+          />
 
-          <div
-            className={`${formStyles.formGroup} w-full sm:w-2/3 md:w-1/3 mx-auto mt-4`}
-          >
-            <label className={formStyles.label} htmlFor="role">
-              Role
-            </label>
-            <select
-              id="role"
-              value={role}
-              onChange={(e) => setRole(e.target.value)}
-              className={formStyles.input}
-            >
-              <option value="user">User</option>
-              <option value="admin">Admin</option>
-              <option value="teacher">Teacher</option>
-            </select>
-          </div>
+          {/* Display password error if validation fails */}
+          {passwordError && (
+            <p className="mb-4 text-center text-red-500">{passwordError}</p>
+          )}
 
-          <div
-            className={`${formStyles.formGroup} w-full sm:w-2/3 md:w-1/3 mx-auto mt-4`}
+          {/* Role Selection */}
+          <select
+            value={role}
+            onChange={(e) => setRole(e.target.value)}
+            className={formStyles.input}
           >
-            <label className="block text-white mb-4">
-              <span className="mb-2">Profile Picture</span>
-              <input
-                type="file"
-                accept="image/*"
-                onChange={handleImageChange}
-                className={`${formStyles.uploadButton} py-2 border-none`}
-              />
-            </label>
+            <option value="user">User</option>
+            <option value="admin">Admin</option>
+            <option value="teacher">Teacher</option>
+          </select>
+
+          {/* Profile Picture Upload */}
+          <div className="flex flex-col items-center mt-4 mb-4">
             <div className="w-32 h-32 mb-4">
               {previewImage ? (
                 <img
@@ -198,11 +199,20 @@ const Signup: React.FC = () => {
                 </div>
               )}
             </div>
+
+            <label className="block text-white">
+              <span className="mb-2">Profile Picture</span>
+              <input
+                type="file"
+                accept="image/*"
+                onChange={handleImageChange}
+                className={`${formStyles.uploadButton} py-2 border-none`}
+              />
+            </label>
           </div>
 
-          <div
-            className={`${formStyles.formGroup} w-full sm:w-2/3 md:w-1/3 mx-auto mt-4`}
-          >
+          {/* Terms Agreement */}
+          <div className="mb-4">
             <label className="inline-flex items-center">
               <input
                 type="checkbox"
@@ -219,19 +229,21 @@ const Signup: React.FC = () => {
             </label>
           </div>
 
-          <div
-            className={`${formStyles.formGroup} w-full sm:w-2/3 md:w-1/3 mx-auto mt-4`}
+          {/* Submit Button */}
+          <button
+            type="submit"
+            className={`${
+              agreedToTerms
+                ? buttonStyles.primary
+                : "bg-gray-500 w-full py-3 text-xl font-bold text-duolingoLight rounded-full shadow-lg"
+            } mt-4 transition-opacity duration-300`}
+            disabled={loading || !agreedToTerms}
           >
-            <button
-              type="submit"
-              className={`${buttonStyles.primary} w-full`}
-              disabled={loading || !agreedToTerms}
-            >
-              {loading ? "Signing up..." : "Sign up"}
-            </button>
-          </div>
+            {loading ? "Signing up..." : "Sign up"}
+          </button>
         </form>
 
+        {/* Redirect to login */}
         <p className="mt-4 text-center text-duolingoLight">
           Already have an account?{" "}
           <Link href="/login" className="underline">
