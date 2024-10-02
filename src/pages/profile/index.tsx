@@ -11,6 +11,7 @@ import {
 import { AppDispatch, RootState } from "../../redux/store/store";
 import { useRouter } from "next/router";
 import Image from "next/image";
+// import Spinner from "../Spinner";
 
 const UserProfile: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -33,16 +34,15 @@ const UserProfile: React.FC = () => {
   const [profilePicture, setProfilePicture] = useState<File | null>(null);
   const [previewImage, setPreviewImage] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+  const [passwordError, setPasswordError] = useState<string | null>(null);
 
   const { username, email, currentPassword, newPassword, confirmPassword } =
     formState;
 
-  // Fetch user profile when the component is mounted
   useEffect(() => {
     dispatch(fetchUserProfile());
   }, [dispatch]);
 
-  // Update the form state when the user profile data is fetched
   useEffect(() => {
     if (userProfile) {
       setFormState({
@@ -55,13 +55,11 @@ const UserProfile: React.FC = () => {
     }
   }, [userProfile]);
 
-  // Handle input change for profile update
   const handleChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     const { id, value } = e.target;
     setFormState((prev) => ({ ...prev, [id]: value }));
   }, []);
 
-  // Handle profile picture change
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
@@ -74,7 +72,6 @@ const UserProfile: React.FC = () => {
     }
   };
 
-  // Handle profile form submission
   const handleProfileSubmit = useCallback(
     async (e: React.FormEvent) => {
       e.preventDefault();
@@ -100,12 +97,12 @@ const UserProfile: React.FC = () => {
     [dispatch, username, email, profilePicture]
   );
 
-  // Handle password change form submission
   const handlePasswordSubmit = useCallback(
     async (e: React.FormEvent) => {
       e.preventDefault();
       if (newPassword !== confirmPassword) {
-        return alert("Passwords do not match");
+        setPasswordError("Passwords do not match.");
+        return;
       }
       setLoading(true);
       try {
@@ -115,6 +112,7 @@ const UserProfile: React.FC = () => {
             newPassword,
           })
         );
+        setPasswordError(null);
         alert("Password changed successfully!");
       } catch (error) {
         console.error("Failed to change password:", error);
@@ -126,15 +124,14 @@ const UserProfile: React.FC = () => {
     [dispatch, currentPassword, newPassword, confirmPassword]
   );
 
-  // Handle logout
   const handleLogOut = useCallback(() => {
     dispatch(logout());
     router.push("/login");
   }, [dispatch, router]);
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-duolingo-dark text-duolingo-light">
-      <div className="bg-duolingo-dark p-8 rounded-2xl shadow-lg max-w-4xl w-full">
+    <div className="container-full-screen-center">
+      <div className="container-card">
         <div className="flex justify-center mb-6">
           <Image
             src="https://static1.howtogeekimages.com/wordpress/wp-content/uploads/2023/09/duolingo-generic-hero.jpg"
@@ -145,129 +142,89 @@ const UserProfile: React.FC = () => {
         </div>
         <div className="flex justify-center mb-4">
           <img
-            className="w-32 h-32 rounded-full shadow-md border-4 border-duolingo-green"
+            className="profile-picture"
             src={previewImage || "/path-to-profile-pic.jpg"}
             alt="Profile"
           />
         </div>
-        <h2 className="text-2xl font-semibold text-center mb-2 text-duolingo-green">
-          {username}
-        </h2>
-        <p className="text-center text-duolingo-light mb-6">
-          Joined September 2023
-        </p>
-        <div className="flex justify-between mb-6">
-          <div className="bg-duolingo-dark p-4 rounded-lg shadow-md w-1/3">
-            <h3 className="text-lg font-semibold mb-2">Statistics</h3>
-            <p>Day streak: 40</p>
-            <p>Total XP: 6968</p>
-            <p>Current league: Emerald</p>
-            <p>Top 3 finishes: 1</p>
-          </div>
-          <div className="bg-duolingo-dark p-4 rounded-lg shadow-md w-1/3">
-            <h3 className="text-lg font-semibold mb-2">Achievements</h3>
-            <p>Legendary: 10/25</p>
-            <p>Challenger: 228/500</p>
-            <p>Wildfire: 40/50</p>
-          </div>
-          <div className="bg-duolingo-dark p-4 rounded-lg shadow-md w-1/3">
-            <h3 className="text-lg font-semibold mb-2">Who to follow</h3>
-            <p>Paul Jordan</p>
-            <p>Manuela Foli</p>
-            <p>Esther</p>
-          </div>
-        </div>
-        <form className="space-y-4" onSubmit={handleProfileSubmit}>
-          <div>
-            <label className="block text-duolingo-light">Username:</label>
+        <h2 className="profile-username">{username}</h2>
+        <p className="profile-description">Joined September 2023</p>
+        {/* {loading && <Spinner />} Display spinner during loading */}
+        <form onSubmit={handleProfileSubmit}>
+          <div className="form-group">
+            <label className="form-label">Username</label>
             <input
               type="text"
-              className="w-full p-2 border border-gray-300 rounded-lg bg-duolingo-dark text-duolingo-light"
+              className="form-input"
               id="username"
               value={username}
               onChange={handleChange}
               required
             />
           </div>
-          <div>
-            <label className="block text-duolingo-light">Email:</label>
+          <div className="form-group">
+            <label className="form-label">Email</label>
             <input
               type="email"
-              className="w-full p-2 border border-gray-300 rounded-lg bg-duolingo-dark text-duolingo-light"
+              className="form-input"
               id="email"
               value={email}
               onChange={handleChange}
               required
             />
           </div>
-          <div>
-            <label className="block text-duolingo-light">
-              Profile Picture:
-            </label>
+          <div className="form-group">
+            <label className="form-label">Profile Picture</label>
             <input
               type="file"
-              className="w-full p-2 border border-gray-300 rounded-lg bg-duolingo-dark text-duolingo-light"
+              className="form-input"
               onChange={handleImageChange}
             />
           </div>
-          <button
-            type="submit"
-            className="w-full py-2 bg-duolingo-green text-duolingo-light rounded-lg hover:bg-green-600 transition duration-200"
-            disabled={loading}
-          >
+          <button type="submit" className="button-primary" disabled={loading}>
             {loading ? "Updating..." : "Update Profile"}
           </button>
         </form>
-        <form className="space-y-4 mt-6" onSubmit={handlePasswordSubmit}>
-          <div>
-            <label className="block text-duolingo-light">
-              Current Password:
-            </label>
+        <form className="mt-6" onSubmit={handlePasswordSubmit}>
+          {passwordError && <p className="text-red-500">{passwordError}</p>}
+          <div className="form-group">
+            <label className="form-label">Current Password</label>
             <input
               type="password"
-              className="w-full p-2 border border-gray-300 rounded-lg bg-duolingo-dark text-duolingo-light"
+              className="form-input"
               id="currentPassword"
               value={currentPassword}
               onChange={handleChange}
               required
             />
           </div>
-          <div>
-            <label className="block text-duolingo-light">New Password:</label>
+          <div className="form-group">
+            <label className="form-label">New Password</label>
             <input
               type="password"
-              className="w-full p-2 border border-gray-300 rounded-lg bg-duolingo-dark text-duolingo-light"
+              className="form-input"
               id="newPassword"
               value={newPassword}
               onChange={handleChange}
               required
             />
           </div>
-          <div>
-            <label className="block text-duolingo-light">
-              Confirm New Password:
-            </label>
+          <div className="form-group">
+            <label className="form-label">Confirm New Password</label>
             <input
               type="password"
-              className="w-full p-2 border border-gray-300 rounded-lg bg-duolingo-dark text-duolingo-light"
+              className="form-input"
               id="confirmPassword"
               value={confirmPassword}
               onChange={handleChange}
               required
             />
           </div>
-          <button
-            type="submit"
-            className="w-full py-2 bg-duolingo-green text-duolingo-light rounded-lg hover:bg-green-600 transition duration-200"
-            disabled={loading}
-          >
+          <button type="submit" className="button-primary" disabled={loading}>
             {loading ? "Changing..." : "Change Password"}
           </button>
         </form>
-        <button
-          className="w-full py-2 mt-4 bg-red-500 text-duolingo-light rounded-lg hover:bg-red-600 transition duration-200"
-          onClick={handleLogOut}
-        >
+        <button className="button-logout mt-4" onClick={handleLogOut}>
           Logout
         </button>
       </div>
