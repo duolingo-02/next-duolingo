@@ -1,5 +1,4 @@
 "use client";
-
 import React, { useCallback, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { logout } from "../../redux/actions/authActions";
@@ -11,13 +10,8 @@ import {
 } from "../../redux/actions/userActions";
 import { AppDispatch, RootState } from "../../redux/store/store";
 import { useRouter } from "next/router";
-import {
-  buttonStyles,
-  containerStyles,
-  formStyles,
-  profileStyles,
-  typographyStyles,
-} from "../../styles/styles";
+import Image from "next/image";
+// import Spinner from "../Spinner";
 
 const UserProfile: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -40,16 +34,15 @@ const UserProfile: React.FC = () => {
   const [profilePicture, setProfilePicture] = useState<File | null>(null);
   const [previewImage, setPreviewImage] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+  const [passwordError, setPasswordError] = useState<string | null>(null);
 
   const { username, email, currentPassword, newPassword, confirmPassword } =
     formState;
 
-  // Fetch user profile when the component is mounted
   useEffect(() => {
     dispatch(fetchUserProfile());
   }, [dispatch]);
 
-  // Update the form state when the user profile data is fetched
   useEffect(() => {
     if (userProfile) {
       setFormState({
@@ -62,13 +55,11 @@ const UserProfile: React.FC = () => {
     }
   }, [userProfile]);
 
-  // Handle input change for profile update
   const handleChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     const { id, value } = e.target;
     setFormState((prev) => ({ ...prev, [id]: value }));
   }, []);
 
-  // Handle profile picture change
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
@@ -81,7 +72,6 @@ const UserProfile: React.FC = () => {
     }
   };
 
-  // Handle profile form submission
   const handleProfileSubmit = useCallback(
     async (e: React.FormEvent) => {
       e.preventDefault();
@@ -107,12 +97,12 @@ const UserProfile: React.FC = () => {
     [dispatch, username, email, profilePicture]
   );
 
-  // Handle password change form submission
   const handlePasswordSubmit = useCallback(
     async (e: React.FormEvent) => {
       e.preventDefault();
       if (newPassword !== confirmPassword) {
-        return alert("Passwords do not match");
+        setPasswordError("Passwords do not match.");
+        return;
       }
       setLoading(true);
       try {
@@ -122,6 +112,7 @@ const UserProfile: React.FC = () => {
             newPassword,
           })
         );
+        setPasswordError(null);
         alert("Password changed successfully!");
       } catch (error) {
         console.error("Failed to change password:", error);
@@ -133,110 +124,107 @@ const UserProfile: React.FC = () => {
     [dispatch, currentPassword, newPassword, confirmPassword]
   );
 
-  // Handle logout
   const handleLogOut = useCallback(() => {
     dispatch(logout());
     router.push("/login");
   }, [dispatch, router]);
 
   return (
-    <div className={containerStyles.fullScreenCenter}>
-      <div className={containerStyles.card}>
-        <h1 className={typographyStyles.heading1}>Profile</h1>
-        <div className={profileStyles.pictureContainer}>
+    <div className="container-full-screen-center">
+      <div className="container-card">
+        <div className="flex justify-center mb-6">
+          <Image
+            src="https://static1.howtogeekimages.com/wordpress/wp-content/uploads/2023/09/duolingo-generic-hero.jpg"
+            alt="Duolingo Owl"
+            width={80}
+            height={80}
+          />
+        </div>
+        <div className="flex justify-center mb-4">
           <img
-            className={profileStyles.picture}
+            className="profile-picture"
             src={previewImage || "/path-to-profile-pic.jpg"}
             alt="Profile"
           />
         </div>
-        <h2 className={profileStyles.username}>{username}</h2>
-        <p className={profileStyles.profileDescription}>
-          This is your bio description. You can edit it in your profile
-          settings.
-        </p>
-        <form className={formStyles.formGroup} onSubmit={handleProfileSubmit}>
-          <label className={formStyles.label}>
-            Username:
+        <h2 className="profile-username">{username}</h2>
+        <p className="profile-description">Joined September 2023</p>
+        {/* {loading && <Spinner />} Display spinner during loading */}
+        <form onSubmit={handleProfileSubmit}>
+          <div className="form-group">
+            <label className="form-label">Username</label>
             <input
               type="text"
-              className={formStyles.input}
+              className="form-input"
               id="username"
               value={username}
               onChange={handleChange}
               required
             />
-          </label>
-          <label className={formStyles.label}>
-            Email:
+          </div>
+          <div className="form-group">
+            <label className="form-label">Email</label>
             <input
               type="email"
-              className={formStyles.input}
+              className="form-input"
               id="email"
               value={email}
               onChange={handleChange}
               required
             />
-          </label>
-          <label className={formStyles.label}>
-            Profile Picture:
+          </div>
+          <div className="form-group">
+            <label className="form-label">Profile Picture</label>
             <input
               type="file"
-              className={formStyles.input}
+              className="form-input"
               onChange={handleImageChange}
             />
-          </label>
-          <button
-            type="submit"
-            className={buttonStyles.primary}
-            disabled={loading}
-          >
+          </div>
+          <button type="submit" className="button-primary" disabled={loading}>
             {loading ? "Updating..." : "Update Profile"}
           </button>
         </form>
-        <form className={formStyles.formGroup} onSubmit={handlePasswordSubmit}>
-          <label className={formStyles.label}>
-            Current Password:
+        <form className="mt-6" onSubmit={handlePasswordSubmit}>
+          {passwordError && <p className="text-red-500">{passwordError}</p>}
+          <div className="form-group">
+            <label className="form-label">Current Password</label>
             <input
               type="password"
-              className={formStyles.input}
+              className="form-input"
               id="currentPassword"
               value={currentPassword}
               onChange={handleChange}
               required
             />
-          </label>
-          <label className={formStyles.label}>
-            New Password:
+          </div>
+          <div className="form-group">
+            <label className="form-label">New Password</label>
             <input
               type="password"
-              className={formStyles.input}
+              className="form-input"
               id="newPassword"
               value={newPassword}
               onChange={handleChange}
               required
             />
-          </label>
-          <label className={formStyles.label}>
-            Confirm New Password:
+          </div>
+          <div className="form-group">
+            <label className="form-label">Confirm New Password</label>
             <input
               type="password"
-              className={formStyles.input}
+              className="form-input"
               id="confirmPassword"
               value={confirmPassword}
               onChange={handleChange}
               required
             />
-          </label>
-          <button
-            type="submit"
-            className={buttonStyles.primary}
-            disabled={loading}
-          >
+          </div>
+          <button type="submit" className="button-primary" disabled={loading}>
             {loading ? "Changing..." : "Change Password"}
           </button>
         </form>
-        <button className={buttonStyles.logout} onClick={handleLogOut}>
+        <button className="button-logout mt-4" onClick={handleLogOut}>
           Logout
         </button>
       </div>

@@ -84,6 +84,8 @@ export const spacingStyles = {
   paddingSmall: "p-2",
 };
 
+// ...
+
 // Profile-Specific Styles
 export const profileStyles = {
   pictureContainer: "w-24 h-24 mb-4 flex justify-center items-center",
@@ -92,6 +94,8 @@ export const profileStyles = {
   username: "mt-4 text-4xl font-bold text-duolingoLight text-center",
   profileDescription: "text-center text-duolingoGray mt-2",
 };
+
+// ...
 
 // Form-Specific Styles
 export const formStyles = {

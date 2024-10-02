@@ -1,4 +1,6 @@
 // Home.tsx
+
+'use client'
 import React, { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import GameWrapper from "@/components/games/GameWrapper";
