@@ -29,9 +29,6 @@ const Login: React.FC = () => {
         login({ email, passwordHash: password })
       ).unwrap();
 
-      // localStorage.setItem("token", response.token);
-
-      // console.log("Token set in localStorage:", response.token);
       router.push("/");
     } catch (err) {
       const errorMessage = (err as any).message || "Login failed";
@@ -59,31 +56,47 @@ const Login: React.FC = () => {
         )}
 
         <form onSubmit={handleSubmit}>
-          <input
-            type="email"
-            placeholder="Email or Username"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            className={formStyles.input}
-            required
-          />
-
-          <input
-            type="password"
-            placeholder="Password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            className={formStyles.input}
-            required
-          />
-
-          <button
-            type="submit"
-            className={`${buttonStyles.primary} mt-4`}
-            disabled={loading}
+          <div
+            className={`${formStyles.formGroup} w-full sm:w-2/3 md:w-1/3 mx-auto`}
           >
-            {loading ? "Logging in..." : "Login"}
-          </button>
+            <label className={formStyles.label} htmlFor="email">
+              Email or Username
+            </label>
+            <input
+              type="email"
+              id="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              className={formStyles.input}
+              required
+            />
+          </div>
+
+          <div
+            className={`${formStyles.formGroup} w-full sm:w-2/3 md:w-1/3 mx-auto mt-4`}
+          >
+            <label className={formStyles.label} htmlFor="password">
+              Password
+            </label>
+            <input
+              type="password"
+              id="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              className={formStyles.input}
+              required
+            />
+          </div>
+
+          <div className="w-full sm:w-2/3 md:w-1/3 mx-auto mt-4">
+            <button
+              type="submit"
+              className={`${buttonStyles.primary} w-full`}
+              disabled={loading}
+            >
+              {loading ? "Logging in..." : "Login"}
+            </button>
+          </div>
         </form>
 
         <p className="mt-4 text-center text-duolingoLight">

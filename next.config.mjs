@@ -1,4 +1,4 @@
-import withPWA from 'next-pwa';
+import withPWA from "next-pwa";
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
@@ -8,19 +8,24 @@ const nextConfig = {
   webpack(config) {
     config.module.rules.push({
       test: /\.svg$/, // Handling SVG files
-      use: ['@svgr/webpack'],
+      use: ["@svgr/webpack"],
     });
     return config;
   },
 
   // Image optimization settings
   images: {
-    domains: ['cdn.countryflags.com','loremflickr.com', 'picsum.photos'],
+    domains: [
+      "cdn.countryflags.com",
+      "loremflickr.com",
+      "picsum.photos",
+      "static1.howtogeekimages.com", // Add the new domain here
+    ],
     remotePatterns: [
       {
-        protocol: 'https',
-        hostname: 'cdn.countryflags.com',
-        pathname: '/thumbs/**',
+        protocol: "https",
+        hostname: "cdn.countryflags.com",
+        pathname: "/thumbs/**",
       },
     ],
   },
@@ -28,6 +33,6 @@ const nextConfig = {
 
 // Separate PWA configuration and do not spread it with nextConfig
 export default withPWA({
-  dest: 'public', // Directory for service worker and cached files
-  disable: process.env.NODE_ENV === 'development', // Disable PWA in development
+  dest: "public", // Directory for service worker and cached files
+  disable: process.env.NODE_ENV === "development", // Disable PWA in development
 })(nextConfig); // Apply PWA only to the overall config
