@@ -21,12 +21,12 @@ const HeroWelcome: React.FC = () => {
         </p>
 
         <div className="flex flex-col space-y-4">
-          <Link href="/auth/signup" className={`${buttonStyles.primary} w-full py-3 transition-colors transform hover:scale-105 flex items-center justify-center space-x-2`}>
+          <Link href="/signup" className={`${buttonStyles.primary} w-full py-3 transition-colors transform hover:scale-105 flex items-center justify-center space-x-2`}>
             <Image src="/assets/icons/remarque.svg" alt="Sign up" width={24} height={24} />
             <span>Start your adventure</span>
           </Link>
 
-          <Link href="/auth/login" className={`${buttonStyles.secondary} w-full py-3 transition-colors transform hover:scale-105 flex items-center justify-center space-x-2`}>
+          <Link href="/login" className={`${buttonStyles.secondary} w-full py-3 transition-colors transform hover:scale-105 flex items-center justify-center space-x-2`}>
             <Image src="/assets/icons/cle.svg" alt="Login" width={24} height={24} />
             <span>Continue your quest</span>
           </Link>

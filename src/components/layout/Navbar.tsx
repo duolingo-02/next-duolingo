@@ -37,7 +37,7 @@ const Navbar: React.FC<NavbarProps> = ({ isAuthenticated, logout }) => {
     return () => window.removeEventListener("scroll", handleScroll);
   }, [lastScrollY]);
 
-  const isActive = (path: string) => router.pathname === path;
+  const isActive = (path: string) => router.pathname === path || (path === "/" && (router.pathname === "/" || router.pathname === "/home"));
 
   return (
     <div>
@@ -92,16 +92,15 @@ const Navbar: React.FC<NavbarProps> = ({ isAuthenticated, logout }) => {
             LINGOLEAP
           </h1>
         </div>
-
         <ul className="flex flex-col space-y-8">
           <li className="flex items-center gap-4 group">
             <span className="p-3 transition-transform duration-300 rounded-full shadow-lg bg-duolingoGreen group-hover:scale-110">
               <Image src="/assets/icons/learn.svg" alt="Learn" width={24} height={24} className="text-duolingoLight" />
             </span>
             <Link
-              href="/home"
+              href="/"
               className={`text-xl font-medium ${
-                isActive("/home")
+                isActive("/")
                   ? "text-duolingoGreen"
                   : "text-duolingoLight group-hover:text-duolingoGreen"
               } transition-colors duration-300`}
@@ -110,8 +109,8 @@ const Navbar: React.FC<NavbarProps> = ({ isAuthenticated, logout }) => {
             </Link>
           </li>
           <li className="flex items-center gap-4 group">
-            <span className="p-3 transition-transform duration-300 rounded-full shadow-lg bg-duolingoBlue group-hover:scale-110">
-              <Image src="/assets/icons/achivement.svg" alt="Achievements" width={24} height={24} className="text-duolingoDark" />
+            <span className="p-3 transition-transform duration-300 rounded-full shadow-lg bg-duolingoGreen group-hover:scale-110">
+              <Image src="/assets/icons/achivement.svg" alt="Achievements" width={24} height={24} className="text-duolingoLight" />
             </span>
             <Link
               href="/achievements"
@@ -125,7 +124,7 @@ const Navbar: React.FC<NavbarProps> = ({ isAuthenticated, logout }) => {
             </Link>
           </li>
           <li className="flex items-center gap-4 group">
-            <span className="p-3 transition-transform duration-300 rounded-full shadow-lg bg-duolingoYellow group-hover:scale-110">
+            <span className="p-3 transition-transform duration-300 rounded-full shadow-lg bg-duolingoGreen group-hover:scale-110">
               <Image src="/assets/icons/profile.svg" alt="Profile" width={24} height={24} className="text-duolingoLight" />
             </span>
             <Link
@@ -139,11 +138,9 @@ const Navbar: React.FC<NavbarProps> = ({ isAuthenticated, logout }) => {
               Profile
             </Link>
           </li>
-
-          {/* Conditionally render the Admin Dashboard link */}
           {isAdmin && (
             <li className="flex items-center gap-4 group">
-              <span className="p-3 transition-transform duration-300 rounded-full shadow-lg bg-duolingoGrayDark group-hover:scale-110">
+              <span className="p-3 transition-transform duration-300 rounded-full shadow-lg bg-duolingoGreen group-hover:scale-110">
                 <Image src="/assets/icons/admin.svg" alt="Admin" width={24} height={24} className="text-duolingoLight" />
               </span>
               <Link
@@ -185,13 +182,13 @@ const Navbar: React.FC<NavbarProps> = ({ isAuthenticated, logout }) => {
       <div className="fixed inset-x-0 bottom-0 z-50 block bg-duolingoGreen md:hidden">
         <div className="flex justify-around p-4">
           <Link
-            href="/home"
+            href="/"
             className="flex flex-col items-center transition-all duration-300 ease-in-out"
           >
             <Image src="/assets/icons/learn.svg" alt="Learn" width={24} height={24} className="mb-1 text-duolingoLight" />
             <span
               className={`text-xs transition-all duration-300 ease-in-out ${
-                isActive("/home")
+                isActive("/")
                   ? "bg-duolingoLight text-duolingoDark rounded-full px-2 shadow-lg"
                   : "text-duolingoLight hover:bg-duolingoLight hover:text-duolingoDark hover:rounded-full hover:shadow-md"
               }`}

@@ -3,16 +3,15 @@ import { useSelector, useDispatch } from "react-redux";
 import { RootState } from "../../redux/store/store";
 import Image from "next/image";
 import { incrementLives } from "../../redux/actions/gameActions";
-
 interface GameBarProps {
   initialTimerValue: number;
-  lives: number;
   points: number;
   progress: number;
+  lives: number;  
 }
-
-const GameBar: React.FC<GameBarProps> = ({ initialTimerValue, lives, points, progress }) => {
+const GameBar: React.FC<GameBarProps> = ({ initialTimerValue, points: totalPoints, progress }) => {
   const dispatch = useDispatch();
+  const lives = useSelector((state: RootState) => state.game.lives);
   const extraLives = useSelector((state: RootState) => state.game.extraLives);
   const userProfile = useSelector((state: RootState) => state.user.profile);
 
@@ -61,7 +60,7 @@ const GameBar: React.FC<GameBarProps> = ({ initialTimerValue, lives, points, pro
         <div className="flex items-center space-x-4 bg-duolingoDark rounded-full px-6 py-2 shadow-lg">
           {/* Lives Section */}
           <div className="flex items-center space-x-2">
-            {[...Array(5)].map((_, index) => (
+          {[...Array(5)].map((_, index) => (
               <div key={index} className="flex items-center">
                 {index < lives ? (
                   <Image src="/assets/icons/coeur.svg" alt="Heart" width={24} height={24} className="w-6 h-6" />
@@ -70,6 +69,7 @@ const GameBar: React.FC<GameBarProps> = ({ initialTimerValue, lives, points, pro
                 )}
               </div>
             ))}
+
             <span className="font-bold text-white ml-2">
               {lives}/{extraLives.max}
             </span>
@@ -97,7 +97,7 @@ const GameBar: React.FC<GameBarProps> = ({ initialTimerValue, lives, points, pro
           {/* Points Section */}
           <div className="flex items-center">
             <Image src="/assets/icons/euro.svg" alt="Coin" width={24} height={24} className="w-6 h-6" />
-            <span className="ml-2 font-bold text-white">{points}</span>
+            <span className="ml-2 font-bold text-white">{totalPoints}</span>
           </div>
         </div>
 

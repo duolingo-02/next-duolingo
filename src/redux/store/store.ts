@@ -4,7 +4,7 @@ import authReducer from "../reducers/authReducer";
 import gameReducer from "../reducers/gameReducer";
 import languageReducer from "../reducers/languageReducer";
 import { userReducer } from "../reducers/userReducers";
-
+import heartSlice from "../slices/heartSlice";
 import gameReducer2 from "../slices/gameSlice";
 //
 export const store = configureStore({
@@ -14,6 +14,7 @@ export const store = configureStore({
     language: languageReducer,
     game: gameReducer,
     game2: gameReducer2,
+    heart: heartSlice,
   },
 });
 
