@@ -101,3 +101,11 @@ export interface LayoutWrapperProps {
   useGameLayout?: boolean;
   forAdmin?: boolean;
 }
+
+
+export interface GameBarProps {
+  initialTimerValue: number;
+  lives: number;
+  points: number;
+  progress: number;
+}
