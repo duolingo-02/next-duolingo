@@ -133,8 +133,8 @@ const UserProfile: React.FC = () => {
   }, [dispatch, router]);
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-duolingo-dark">
-      <div className="bg-duolingo-dark p-8 rounded-2xl shadow-lg max-w-md w-full">
+    <div className="flex flex-col items-center justify-center min-h-screen bg-duolingo-dark text-duolingo-light">
+      <div className="bg-duolingo-dark p-8 rounded-2xl shadow-lg max-w-4xl w-full">
         <div className="flex justify-center mb-6">
           <Image
             src="https://static1.howtogeekimages.com/wordpress/wp-content/uploads/2023/09/duolingo-generic-hero.jpg"
@@ -143,9 +143,6 @@ const UserProfile: React.FC = () => {
             height={80}
           />
         </div>
-        <h1 className="text-3xl font-bold text-center mb-6 text-duolingo-green">
-          Profile
-        </h1>
         <div className="flex justify-center mb-4">
           <img
             className="w-32 h-32 rounded-full shadow-md border-4 border-duolingo-green"
@@ -157,9 +154,29 @@ const UserProfile: React.FC = () => {
           {username}
         </h2>
         <p className="text-center text-duolingo-light mb-6">
-          This is your bio description. You can edit it in your profile
-          settings.
+          Joined September 2023
         </p>
+        <div className="flex justify-between mb-6">
+          <div className="bg-duolingo-dark p-4 rounded-lg shadow-md w-1/3">
+            <h3 className="text-lg font-semibold mb-2">Statistics</h3>
+            <p>Day streak: 40</p>
+            <p>Total XP: 6968</p>
+            <p>Current league: Emerald</p>
+            <p>Top 3 finishes: 1</p>
+          </div>
+          <div className="bg-duolingo-dark p-4 rounded-lg shadow-md w-1/3">
+            <h3 className="text-lg font-semibold mb-2">Achievements</h3>
+            <p>Legendary: 10/25</p>
+            <p>Challenger: 228/500</p>
+            <p>Wildfire: 40/50</p>
+          </div>
+          <div className="bg-duolingo-dark p-4 rounded-lg shadow-md w-1/3">
+            <h3 className="text-lg font-semibold mb-2">Who to follow</h3>
+            <p>Paul Jordan</p>
+            <p>Manuela Foli</p>
+            <p>Esther</p>
+          </div>
+        </div>
         <form className="space-y-4" onSubmit={handleProfileSubmit}>
           <div>
             <label className="block text-duolingo-light">Username:</label>
