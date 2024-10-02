@@ -6,13 +6,14 @@ import { useDecodeToken } from "../../hooks/useDecode";
 import { containerStyles, typographyStyles } from "../../styles/styles";
 import { Lesson } from "../../types/Game";
 
+import CameraModal from './CameraModal';
 const LessonsStages: React.FC<{ languageId: number }> = ({ languageId }) => {
   const router = useRouter();
   const [lessons, setLessons] = useState<Lesson[]>([]);
   const [progressData, setProgressData] = useState<any[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
-
+  const [isCameraModalOpen, setIsCameraModalOpen] = useState(false);
   const decodedToken = useDecodeToken();
   const userId = decodedToken?.userId;
 
@@ -152,9 +153,10 @@ const LessonsStages: React.FC<{ languageId: number }> = ({ languageId }) => {
             );
           })}
         </div>
+        
       </div>
     </div>
   );
 };
-
+////
 export default LessonsStages;

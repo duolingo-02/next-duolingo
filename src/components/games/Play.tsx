@@ -9,7 +9,9 @@ import { useDispatch } from 'react-redux';
 import { incrementEnergy, incrementProgressPercentage, decrementLives } from '../../redux/actions/gameActions';
 import { useDecodeToken } from '../../hooks/useDecode';
 import GameBar from './GameBar';
-import GameContainer from './GameContainer';
+import VideoCamera from './VideoCamera';
+
+
 const Play: React.FC = () => {
   const router = useRouter();
   const { languageId, stageId } = router.query;
@@ -22,6 +24,27 @@ const Play: React.FC = () => {
   const [progress, setProgress] = useState(0);
   const [isCorrect, setIsCorrect] = useState<boolean | null>(null);
   const [allLessons, setAllLessons] = useState<Lesson[]>([]);
+  const [useCameraMode, setUseCameraMode] = useState(false);
+  const [consecutiveCorrectAnswers, setConsecutiveCorrectAnswers] = useState(0);
+  const [totalPoints, setTotalPoints] = useState(0);
+
+  useEffect(() => {
+    const fetchTotalPoints = async () => {
+      try {
+        const token = localStorage.getItem('token');
+        if (token) {
+          const response = await axios.get('/api/user/totalPoints', {
+            headers: { Authorization: `Bearer ${token}` }
+          });
+          setTotalPoints(response.data.totalPoints);
+        }
+      } catch (error) {
+        console.error('Error fetching total points:', error);
+      }
+    };
+  
+    fetchTotalPoints();
+  }, []);
   const dispatch = useDispatch();
   
   const decodedToken = useDecodeToken();
@@ -100,9 +123,19 @@ const Play: React.FC = () => {
     if (answerIsCorrect) {
       dispatch(incrementEnergy(1));
       dispatch(incrementProgressPercentage(10));
-      setPoints(prevPoints => prevPoints + 10);
+  
+      // Calculate points based on consecutive correct answers
+      let multiplier;
+      if (consecutiveCorrectAnswers === 0) multiplier = 1;
+      else if (consecutiveCorrectAnswers === 1) multiplier = 2;
+      else multiplier = 5;
+  
+      const pointsToAdd = 10 * multiplier;
+  
+      setPoints(prevPoints => prevPoints + pointsToAdd);
+      setConsecutiveCorrectAnswers(prev => prev + 1);
       setProgress(prevProgress => prevProgress + (100 / lessons.length));
-      
+  
       try {
         if (userId !== null && stageId) {
           console.log('Updating progress:', { userId, lessonId: currentLesson.id });
@@ -113,13 +146,25 @@ const Play: React.FC = () => {
             isCompleted: true,
           });
           console.log('Progress updated successfully');
+  
+          // Update total points in the database
+          const token = localStorage.getItem('token');
+          if (token) {
+            await axios.post(
+              '/api/user/updatePoints',
+              { pointsToAdd },
+              { headers: { Authorization: `Bearer ${token}` } }
+            );
+            console.log('Total points updated successfully');
+          }
         }
       } catch (error) {
-        console.error('Error updating progress:', error);
+        console.error('Error updating progress or points:', error);
       }
     } else {
       dispatch(decrementLives());
       setLives(prevLives => prevLives - 1);
+      setConsecutiveCorrectAnswers(0); // Reset consecutive correct answers
     }
   };
   
@@ -144,7 +189,22 @@ const Play: React.FC = () => {
       points,
       progress,
     };
-
+  
+    if (useCameraMode) {
+      return (
+        <VideoCamera
+          key={currentLesson.id}
+          question={currentLesson.question}
+          quizType={currentLesson.type.toLowerCase() as "multiple" | "true_false" | "order"}
+          correctAnswer={currentLesson.answer || (currentLesson.isTrue ? 'True' : 'False') || currentLesson.correctOrder || ''}
+          options={currentLesson.options || undefined}
+scrambledSentence={currentLesson.scrambledSentence || undefined}
+          language={languageId === "2" ? "fr" : "en"}
+          {...commonProps}
+        />
+      );
+    }
+  
     switch (currentLesson.type.toLowerCase()) {
       case 'multiple':
         return (
@@ -182,23 +242,23 @@ const Play: React.FC = () => {
         return <div>Unknown quiz type: {currentLesson.type}</div>;
     }
   }
-return (
-  <div className="min-h-screen bg-gradient-to-br from-gray-800 via-gray-900 to-black relative overflow-hidden flex flex-col">
-    <div className="absolute inset-0 bg-nebula opacity-10"></div>
-    <div className="relative z-10 flex-grow flex flex-col">
-      <GameBar 
-        initialTimerValue={300} 
-        lives={lives}
-        points={points}
-        progress={progress}
-      />
-      <div className="flex-grow">
-        <GameContainer progress={progress}>
+
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-gray-800 via-gray-900 to-black relative overflow-hidden">
+      <div className="absolute inset-0 bg-nebula opacity-10"></div>
+      <div className="relative z-10">
+        <GameBar 
+          initialTimerValue={300} 
+          lives={lives}
+          points={points}
+          progress={progress}
+        />
+        <div className="pt-16 px-4">
+          
           {renderQuiz()}
-        </GameContainer>
+        </div>
       </div>
     </div>
-  </div>
-);
+  );
 }
 export default Play;

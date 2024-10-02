@@ -79,11 +79,13 @@ export interface Lesson {
   correctOrder: string[] | null;
   isTrue: boolean | null;
   points: number;
+  correctAnswer?: string;
   languageId: number;
-  stageId: number;
   createdAt: string;
   updatedAt: string;
+  
 }
+
 
 // Type definition for SentenceOrderQuiz props
 
