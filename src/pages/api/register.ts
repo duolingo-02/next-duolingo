@@ -1,30 +1,28 @@
-// pages/api/users/signup.ts
-import { NextApiRequest, NextApiResponse } from "next";
+import { NextApiRequest, NextApiResponse } from 'next';
 import { PrismaClient } from '@prisma/client';
-import bcrypt from "bcrypt";
-import multer from "multer";
-import fs from 'fs';
-
-const saltRounds = 10;
-const domain = "/uploads/";
-
-const upload = multer({
-  dest: './public/uploads/',
-});
+import bcrypt from 'bcrypt';
+import multer from 'multer';
+import { v4 as uuidv4 } from 'uuid';
+import path from 'path';
 
 const prisma = new PrismaClient();
+const saltRounds = 10;
 
-const uploadMiddleware = upload.single('file');
+interface ExtendedNextApiRequest extends NextApiRequest {
+  file?: Express.Multer.File;
+}
 
-export const config = {
-  api: {
-    bodyParser: {
-      sizeLimit: '100mb',
-    },
-  },
-};
+const upload = multer({
+  storage: multer.diskStorage({
+    destination: './public/uploads',
+    filename: (req, file, cb) => {
+      const uniqueSuffix = `${Date.now()}-${Math.round(Math.random() * 1E9)}`;
+      cb(null, `${file.fieldname}-${uniqueSuffix}${path.extname(file.originalname)}`);
+    }
+  })
+});
 
-const runMiddleware = (req: NextApiRequest, res: NextApiResponse, fn: Function) => {
+const runMiddleware = (req: ExtendedNextApiRequest, res: NextApiResponse, fn: Function) => {
   return new Promise((resolve, reject) => {
     fn(req, res, (result: any) => {
       if (result instanceof Error) {
@@ -35,9 +33,11 @@ const runMiddleware = (req: NextApiRequest, res: NextApiResponse, fn: Function) 
   });
 };
 
-interface ExtendedNextApiRequest extends NextApiRequest {
-  file?: Express.Multer.File;
-}
+export const config = {
+  api: {
+    bodyParser: false,
+  },
+};
 
 export default async function userSignup(req: ExtendedNextApiRequest, res: NextApiResponse) {
   if (req.method !== "POST") {
@@ -45,17 +45,19 @@ export default async function userSignup(req: ExtendedNextApiRequest, res: NextA
   }
 
   try {
-    const { username, email, passwordHash, role } = req.body;
-    const file = req.body.file ? JSON.parse(req.body.file) : null;
+    await runMiddleware(req, res, upload.single('file'));
 
-    console.log("Received data:", { username, email, role, file });
+    console.log("Attempting to connect to the database...");
+    await prisma.$connect();
+    console.log("Database connection successful");
 
-    if (!username || !email || !passwordHash || !role) {
+    const { username, email, passwordHash } = JSON.parse(req.body.data || '{}');
+    const file = req.file;
+
+    console.log("Received data:", { username, email, file: file ? 'File received' : 'No file' });
+
+    if (!username || !email || !passwordHash) {
       return res.status(400).json({ message: "All fields are required" });
-    }
-
-    if (!["user", "admin", "teacher"].includes(role)) {
-      return res.status(400).json({ message: "Invalid role" });
     }
 
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -67,35 +69,56 @@ export default async function userSignup(req: ExtendedNextApiRequest, res: NextA
       return res.status(400).json({ message: "Password must be at least 8 characters long" });
     }
 
-    const existingUser = await prisma.user.findUnique({ where: { email } });
+    console.log("Checking for existing user...");
+    const existingUser = await prisma.user.findFirst({
+      where: {
+        OR: [
+          { email },
+          { username }
+        ]
+      }
+    });
+    
     if (existingUser) {
-      return res.status(400).json({ message: "User already exists" });
+      if (existingUser.email === email) {
+        return res.status(400).json({ message: "Email already in use" });
+      }
+      if (existingUser.username === username) {
+        return res.status(400).json({ message: "Username already taken" });
+      }
     }
 
+    console.log("Hashing password...");
     const hashedPassword = await bcrypt.hash(passwordHash, saltRounds);
     
     let profilePicture = null;
     if (file) {
-      const buffer = Buffer.from(file.data.split(',')[1], 'base64');
-      const filename = `${Date.now()}-${file.name}`;
-      const filePath = `./public/uploads/${filename}`;
-      await fs.promises.writeFile(filePath, buffer);
-      profilePicture = `${domain}${filename}`;
+      console.log("Processing profile picture...");
+      profilePicture = `/uploads/${file.filename}`;
     }
 
+    console.log("Creating user in database...");
     const user = await prisma.user.create({
       data: {
         username,
         email,
         passwordHash: hashedPassword,
-        role,
-        profilePicture: profilePicture || "hello"
+        role: "user",
+        profilePicture: profilePicture || "/default-avatar.png"
       },
     });
 
-    res.status(201).json({ message: "User created successfully", user });
+    console.log("User created successfully");
+    res.status(201).json({ message: "User created successfully", user: { id: user.id, username: user.username, email: user.email } });
   } catch (error) {
-    console.error("Error creating user:", error);
-    res.status(500).json({ message: "Internal server error" });
+    console.error("Error in registration process:", error);
+    if (error instanceof Error) {
+      console.error("Error name:", error.name);
+      console.error("Error message:", error.message);
+      console.error("Error stack:", error.stack);
+    }
+    res.status(500).json({ message: "Internal server error", error: error instanceof Error ? error.message : 'Unknown error' });
+  } finally {
+    await prisma.$disconnect();
   }
 }

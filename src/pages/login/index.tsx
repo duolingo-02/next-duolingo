@@ -2,16 +2,10 @@ import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useRouter } from "next/router";
 import Link from "next/link";
+import Image from 'next/image';
 
 import { login } from "../../redux/actions/authActions";
 import { AppDispatch, RootState } from "../../redux/store/store";
-
-import {
-  buttonStyles,
-  containerStyles,
-  formStyles,
-  typographyStyles,
-} from "../../styles/styles";
 
 const Login: React.FC = () => {
   const [email, setEmail] = useState("");
@@ -37,71 +31,43 @@ const Login: React.FC = () => {
   };
 
   return (
-    <div className={`${containerStyles.fullScreenCenter} p-4`}>
-      <div className={containerStyles.secondCard}>
-        <h1
-          className={`${typographyStyles.heading1} text-blue-300 text-5xl text-center logoTitle`}
-        >
-          Lingoleap
-        </h1>
-
-        <h2 className={`${typographyStyles.heading2} mb-6 text-center`}>
-          Login
-        </h2>
-
-        {error && (
-          <p className="mb-4 text-center text-red-500">
-            Login failed. Please check your information.
-          </p>
-        )}
-
-        <form onSubmit={handleSubmit}>
-          <div
-            className={`${formStyles.formGroup} w-full sm:w-2/3 md:w-1/3 mx-auto`}
+    <div className="min-h-screen flex flex-col items-center justify-center bg-duolingoDark">
+      <div className="w-full max-w-md">
+        <div className="flex items-center justify-center mb-8">
+          <Image src="/assets/icons/icon.svg" alt="LingoLeap Logo" width={40} height={40} />
+          <h1 className="ml-2 text-3xl font-bold text-duolingoGreen">LINGOLEAP</h1>
+        </div>
+        <h2 className="text-4xl font-bold text-center text-duolingoLight mb-8">Lingoleap</h2>
+        <h3 className="text-2xl font-semibold text-center text-duolingoLight mb-6">Login</h3>
+        <form onSubmit={handleSubmit} className="space-y-6">
+          <input
+            type="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            placeholder="Email"
+            className="w-full px-4 py-3 rounded-full bg-duolingoLight text-duolingoDark placeholder-duolingoDark"
+            required
+          />
+          <input
+            type="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            placeholder="Password"
+            className="w-full px-4 py-3 rounded-full bg-duolingoLight text-duolingoDark placeholder-duolingoDark"
+            required
+          />
+          {error && <p className="text-red-500 text-sm text-center">Login failed. Please check your information.</p>}
+          <button
+            type="submit"
+            className="w-full py-3 text-xl font-bold rounded-full bg-duolingoGreen text-duolingoLight hover:bg-opacity-90 transition-all duration-300"
+            disabled={loading}
           >
-            <label className={formStyles.label} htmlFor="email">
-              Email or Username
-            </label>
-            <input
-              type="email"
-              id="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              className={formStyles.input}
-              required
-            />
-          </div>
-
-          <div
-            className={`${formStyles.formGroup} w-full sm:w-2/3 md:w-1/3 mx-auto mt-4`}
-          >
-            <label className={formStyles.label} htmlFor="password">
-              Password
-            </label>
-            <input
-              type="password"
-              id="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              className={formStyles.input}
-              required
-            />
-          </div>
-
-          <div className="w-full sm:w-2/3 md:w-1/3 mx-auto mt-4">
-            <button
-              type="submit"
-              className={`${buttonStyles.primary} w-full`}
-              disabled={loading}
-            >
-              {loading ? "Logging in..." : "Login"}
-            </button>
-          </div>
+            {loading ? "Logging in..." : "Login"}
+          </button>
         </form>
-
-        <p className="mt-4 text-center text-duolingoLight">
-          Don't have an account?{" "}
-          <Link href="/signup" className="underline">
+        <p className="mt-6 text-center text-sm text-duolingoLight">
+          Don't have an account?{' '}
+          <Link href="/signup" className="font-medium text-duolingoGreen hover:text-opacity-80">
             Create a profile
           </Link>
         </p>

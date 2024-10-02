@@ -10,13 +10,14 @@ import {
 const HeroWelcome: React.FC = () => {
   return (
     <div className={`${containerStyles.fullScreenCenter} p-4`}>
-      <div className={containerStyles.secondCard}>
-        <h1 className={`${typographyStyles.heading1} mb-6 text-center text-5xl`}>
-          Welcome to the unknown, 
+      <div className={`${containerStyles.secondCard} max-w-[90%] sm:max-w-[500px]`}>
+        <h1 className={`${typographyStyles.heading1} mb-6 text-center text-4xl sm:text-5xl`}>
+          Welcome to the unknown,
+          <br /> {/* Add line break */}
           <span className="text-indigo-300 logoTitle">Lingoleap</span>
         </h1>
 
-        <p className="mb-4 text-xl font-light text-center">
+        <p className="mb-4 text-lg sm:text-xl font-light text-center">
           Unlock hidden doors and explore the world beyond language.
         </p>
 
@@ -37,4 +38,5 @@ const HeroWelcome: React.FC = () => {
     </div>
   );
 };
+
 export default HeroWelcome;

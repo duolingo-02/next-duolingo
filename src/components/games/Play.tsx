@@ -9,7 +9,7 @@ import { useDispatch } from 'react-redux';
 import { incrementEnergy, incrementProgressPercentage, decrementLives } from '../../redux/actions/gameActions';
 import { useDecodeToken } from '../../hooks/useDecode';
 import GameBar from './GameBar';
-
+import Navbar from '../layout/Navbar';
 
 
 const Play: React.FC = () => {
@@ -231,6 +231,7 @@ const Play: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-800 via-gray-900 to-black relative overflow-hidden">
+     <Navbar isAuthenticated={true} logout={() => {}} />
       <div className="absolute inset-0 bg-nebula opacity-10"></div>
       <div className="relative z-10">
         <GameBar 

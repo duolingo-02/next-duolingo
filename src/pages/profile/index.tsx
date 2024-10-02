@@ -11,6 +11,7 @@ import {
 import { AppDispatch, RootState } from "../../redux/store/store";
 import { useRouter } from "next/router";
 import Image from "next/image";
+import Navbar from "../../components/layout/Navbar";
 // import Spinner from "../Spinner";
 
 const UserProfile: React.FC = () => {
@@ -131,6 +132,7 @@ const UserProfile: React.FC = () => {
 
   return (
     <div className="container-full-screen-center p-2">
+        <Navbar isAuthenticated={true} logout={() => {}} />
       <div className="container-card max-w-xs mx-auto p-2 bg-white rounded-lg shadow-md">
         <div className="flex justify-center mb-2">
           <Image
@@ -144,7 +146,7 @@ const UserProfile: React.FC = () => {
           <img
             className="profile-picture w-12 h-12 rounded-full object-cover"
             src={previewImage || "/path-to-profile-pic.jpg"}
-            alt="Profile"
+           
           />
         </div>
         <h2 className="profile-username text-sm font-bold text-center mb-1">
